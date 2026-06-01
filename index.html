@@ -1,81 +1,711 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Games</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binzoki Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f0e8;
+    --games:   #ff3c00;
+    --popculture: #7c3aed;  
+    --design: #00b4a0;
+    --accent: #ffe600;
+    --grid: rgba(245,240,232,0.04);
+  }
 
-    body {
-      background: #0f0f1a;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', sans-serif;
-      color: #fff;
-    }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 3rem;
-      letter-spacing: 0.1em;
-      color: #a0a0c0;
-    }
+  html { scroll-behavior: smooth; }
 
-    .games-grid {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
 
-    .game-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-    }
+  /* ── Custom cursor ── */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor.grow { width: 40px; height: 40px; }
 
-    .game-icon {
-      width: 120px;
-      height: 120px;
-      border-radius: 24px;
-      background: #1a2a1a;
-      border: 2px solid #2a4a2a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 4rem;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-    }
+  /* ── Background grid ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-    .game-card:hover .game-icon {
-      transform: scale(1.08);
-      border-color: #4caf50;
-      box-shadow: 0 0 24px rgba(76, 175, 80, 0.4);
-    }
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 6vw 6vh;
+    overflow: hidden;
+    z-index: 1;
+  }
 
-    .game-label {
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: #c0c0d0;
-    }
-  </style>
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(120px, 22vw, 320px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(245,240,232,0.06);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.02em;
+    animation: slowdrift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes slowdrift {
+    from { transform: translate(-50%, -50%) translateX(-2%); }
+    to   { transform: translate(-50%, -50%) translateX(2%); }
+  }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadein 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 12vw, 160px);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: slideup 0.9s 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    max-width: 480px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(245,240,232,0.5);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadein 0.8s 0.7s forwards;
+  }
+
+  .hero-scroll {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(245,240,232,0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadein 0.8s 1s forwards;
+  }
+
+  .hero-scroll::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: rgba(245,240,232,0.3);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 6vw;
+    z-index: 100;
+    mix-blend-mode: normal;
+  }
+
+  nav::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.9), transparent);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: rgba(245,240,232,0.45);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  /* ── SECTION BASE ── */
+  section {
+    position: relative;
+    padding: 120px 6vw;
+    z-index: 1;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 64px;
+    border-bottom: 1px solid rgba(245,240,232,0.08);
+    padding-bottom: 24px;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .section-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(245,240,232,0.25);
+    letter-spacing: 0.1em;
+    padding-bottom: 4px;
+  }
+
+  /* ── GAMES SECTION ── */
+  #games .section-label { color: var(--games); }
+  #games .section-title { color: var(--games); }
+
+  /* ── POPCULTURE SECTION ── */
+  #popculture .section-label { color: var(--popculture); }
+  #popculture .section-title { color: var(--popculture); }
+
+  /* ── DESIGN SECTION ── */
+  #design .section-label { color: var(--design); }
+  #design .section-title { color: var(--design); }
+
+  /* ── PROJECT CARDS ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2px;
+  }
+
+  .card {
+    position: relative;
+    background: rgba(245,240,232,0.03);
+    border: 1px solid rgba(245,240,232,0.06);
+    padding: 36px;
+    overflow: hidden;
+    transition: background 0.3s, border-color 0.3s;
+    text-decoration: none;
+    color: var(--white);
+    display: block;
+    cursor: none;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .card:hover::before { opacity: 1; }
+  .card:hover { border-color: rgba(245,240,232,0.15); }
+
+  /* Color tints per section */
+  #games   .card::before { background: linear-gradient(135deg, rgba(255,60,0,0.08), transparent); }
+  #popculture .card::before { background: linear-gradient(135deg, rgba(124,58,237,0.08), transparent); }
+  #design  .card::before { background: linear-gradient(135deg, rgba(0,180,160,0.08), transparent); }
+
+  .card-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(245,240,232,0.2);
+    margin-bottom: 24px;
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 0.02em;
+    margin-bottom: 12px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  #games   .card:hover .card-title { color: var(--games); }
+  #popculture .card:hover .card-title { color: var(--popculture); }
+  #design  .card:hover .card-title { color: var(--design); }
+
+  .card-desc {
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(245,240,232,0.4);
+    margin-bottom: 32px;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid rgba(245,240,232,0.12);
+    color: rgba(245,240,232,0.35);
+  }
+
+  .card-cta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.3);
+    transition: color 0.2s, gap 0.2s;
+  }
+
+  .card:hover .card-cta { gap: 16px; }
+  #games   .card:hover .card-cta { color: var(--games); }
+  #popculture .card:hover .card-cta { color: var(--popculture); }
+  #design  .card:hover .card-cta { color: var(--design); }
+
+  .card-cta::after {
+    content: '→';
+    font-size: 14px;
+  }
+
+  /* ── FEATURED / WIDE CARD ── */
+  .card.featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    padding: 56px;
+  }
+
+  .card.featured .card-title { font-size: clamp(52px, 6vw, 80px); }
+
+  .card-badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    background: var(--games);
+    color: var(--black);
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  /* ── PLACEHOLDER CARD ── */
+  .card.placeholder {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .card.placeholder .card-title::after {
+    content: ' —';
+    color: rgba(245,240,232,0.2);
+  }
+
+  /* ── DIVIDER ── */
+  .marquee-divider {
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(245,240,232,0.06);
+    border-bottom: 1px solid rgba(245,240,232,0.06);
+    padding: 14px 0;
+    background: rgba(245,240,232,0.02);
+    z-index: 1;
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 0;
+    width: max-content;
+    animation: marquee 18s linear infinite;
+  }
+
+  .marquee-track span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: rgba(245,240,232,0.12);
+    padding: 0 40px;
+    white-space: nowrap;
+  }
+
+  .marquee-track span.accent { color: var(--accent); opacity: 0.5; }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    padding: 80px 6vw 48px;
+    border-top: 1px solid rgba(245,240,232,0.06);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    z-index: 1;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 100px);
+    line-height: 1;
+    color: rgba(245,240,232,0.06);
+    letter-spacing: -0.01em;
+  }
+
+  .footer-right {
+    text-align: right;
+  }
+
+  .footer-right p {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: rgba(245,240,232,0.2);
+    line-height: 2;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadein  { from { opacity:0 } to { opacity:1 } }
+  @keyframes slideup { from { opacity:0; transform:translateY(40px) } to { opacity:1; transform:translateY(0) } }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── NOISE OVERLAY ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.4;
+  }
+</style>
 </head>
 <body>
-  <h1>My Games</h1>
-  <div class="games-grid">
-    <a class="game-card" href="snake-game/snake.html">
-      <div class="game-icon">🐍</div>
-      <span class="game-label">Snake</span>
-    </a>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">BINZOKI<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#games">Games</a></li>
+    <li><a href="#popculture">Pop Culture</a></li>
+    <li><a href="#design">Design</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg-text">BINZOKI</div>
+  <div class="hero-tag">— Creative Studio / Digital Projects</div>
+  <h1 class="hero-title">Binzoki<br><em>Studio</em></h1>
+  <p class="hero-desc">A playground for games, design experiments, and pop culture obsessions. Built weird, on purpose.</p>
+  <div class="hero-scroll">Scroll to explore</div>
+</div>
+
+<!-- DIVIDER -->
+<div class="marquee-divider">
+  <div class="marquee-track">
+    <span>GAMES</span><span class="accent">✦</span>
+    <span>POP CULTURE</span><span class="accent">✦</span>
+    <span>DESIGN & ART</span><span class="accent">✦</span>
+    <span>BINZOKI STUDIO</span><span class="accent">✦</span>
+    <span>GAMES</span><span class="accent">✦</span>
+    <span>POP CULTURE</span><span class="accent">✦</span>
+    <span>DESIGN & ART</span><span class="accent">✦</span>
+    <span>BINZOKI STUDIO</span><span class="accent">✦</span>
+    <span>GAMES</span><span class="accent">✦</span>
+    <span>POP CULTURE</span><span class="accent">✦</span>
+    <span>DESIGN & ART</span><span class="accent">✦</span>
+    <span>BINZOKI STUDIO</span><span class="accent">✦</span>
+    <span>GAMES</span><span class="accent">✦</span>
+    <span>POP CULTURE</span><span class="accent">✦</span>
+    <span>DESIGN & ART</span><span class="accent">✦</span>
+    <span>BINZOKI STUDIO</span><span class="accent">✦</span>
   </div>
+</div>
+
+<!-- GAMES -->
+<section id="games">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">01 — Category</div>
+      <div class="section-title">Games</div>
+    </div>
+    <div class="section-count">1 project</div>
+  </div>
+
+  <div class="projects-grid">
+    <a href="snake-game/snake.html" class="card featured reveal">
+      <div>
+        <div class="card-badge">Live</div>
+        <div class="card-title">Snake Game</div>
+        <div class="card-desc">A fully-featured Snake remake with multiple themes, speed settings, power-ups, and particle effects. Built from scratch in vanilla JS with a retro arcade aesthetic.</div>
+        <div class="card-tags">
+          <span class="tag">Vanilla JS</span>
+          <span class="tag">Canvas API</span>
+          <span class="tag">Game Dev</span>
+          <span class="tag">Retro</span>
+        </div>
+        <div class="card-cta">Play now</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;">
+        <div style="font-size:clamp(80px,10vw,140px);line-height:1;text-align:center;filter:drop-shadow(0 0 40px rgba(255,60,0,0.3));">🐍</div>
+      </div>
+    </a>
+
+    <div class="card placeholder reveal">
+      <div class="card-num">002</div>
+      <div class="card-title">Coming Soon</div>
+      <div class="card-desc">Next project in the works.</div>
+      <div class="card-tags"><span class="tag">TBD</span></div>
+    </div>
+
+    <div class="card placeholder reveal">
+      <div class="card-num">003</div>
+      <div class="card-title">Coming Soon</div>
+      <div class="card-desc">Another one brewing.</div>
+      <div class="card-tags"><span class="tag">TBD</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="marquee-divider">
+  <div class="marquee-track" style="animation-direction:reverse;animation-duration:24s;">
+    <span>ANIME</span><span class="accent">✦</span>
+    <span>MOVIES</span><span class="accent">✦</span>
+    <span>MUSIC</span><span class="accent">✦</span>
+    <span>TV SHOWS</span><span class="accent">✦</span>
+    <span>COMICS</span><span class="accent">✦</span>
+    <span>ANIME</span><span class="accent">✦</span>
+    <span>MOVIES</span><span class="accent">✦</span>
+    <span>MUSIC</span><span class="accent">✦</span>
+    <span>TV SHOWS</span><span class="accent">✦</span>
+    <span>COMICS</span><span class="accent">✦</span>
+    <span>ANIME</span><span class="accent">✦</span>
+    <span>MOVIES</span><span class="accent">✦</span>
+    <span>MUSIC</span><span class="accent">✦</span>
+    <span>TV SHOWS</span><span class="accent">✦</span>
+    <span>COMICS</span><span class="accent">✦</span>
+    <span>ANIME</span><span class="accent">✦</span>
+    <span>MOVIES</span><span class="accent">✦</span>
+  </div>
+</div>
+
+<!-- POP CULTURE -->
+<section id="popculture">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">02 — Category</div>
+      <div class="section-title">Pop Culture</div>
+    </div>
+    <div class="section-count">3 placeholders</div>
+  </div>
+
+  <div class="projects-grid">
+    <div class="card placeholder reveal">
+      <div class="card-num">001</div>
+      <div class="card-title">Project Title</div>
+      <div class="card-desc">A pop culture project — coming soon.</div>
+      <div class="card-tags"><span class="tag">Film</span><span class="tag">TBD</span></div>
+      <div class="card-cta">Coming soon</div>
+    </div>
+    <div class="card placeholder reveal">
+      <div class="card-num">002</div>
+      <div class="card-title">Project Title</div>
+      <div class="card-desc">A pop culture project — coming soon.</div>
+      <div class="card-tags"><span class="tag">Music</span><span class="tag">TBD</span></div>
+      <div class="card-cta">Coming soon</div>
+    </div>
+    <div class="card placeholder reveal">
+      <div class="card-num">003</div>
+      <div class="card-title">Project Title</div>
+      <div class="card-desc">A pop culture project — coming soon.</div>
+      <div class="card-tags"><span class="tag">Anime</span><span class="tag">TBD</span></div>
+      <div class="card-cta">Coming soon</div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="marquee-divider">
+  <div class="marquee-track" style="animation-duration:22s;">
+    <span>TYPOGRAPHY</span><span class="accent">✦</span>
+    <span>ILLUSTRATION</span><span class="accent">✦</span>
+    <span>MOTION</span><span class="accent">✦</span>
+    <span>BRANDING</span><span class="accent">✦</span>
+    <span>UI/UX</span><span class="accent">✦</span>
+    <span>TYPOGRAPHY</span><span class="accent">✦</span>
+    <span>ILLUSTRATION</span><span class="accent">✦</span>
+    <span>MOTION</span><span class="accent">✦</span>
+    <span>BRANDING</span><span class="accent">✦</span>
+    <span>UI/UX</span><span class="accent">✦</span>
+    <span>TYPOGRAPHY</span><span class="accent">✦</span>
+    <span>ILLUSTRATION</span><span class="accent">✦</span>
+    <span>MOTION</span><span class="accent">✦</span>
+    <span>BRANDING</span><span class="accent">✦</span>
+    <span>UI/UX</span><span class="accent">✦</span>
+  </div>
+</div>
+
+<!-- DESIGN -->
+<section id="design">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">03 — Category</div>
+      <div class="section-title">Design & Art</div>
+    </div>
+    <div class="section-count">3 placeholders</div>
+  </div>
+
+  <div class="projects-grid">
+    <div class="card placeholder reveal">
+      <div class="card-num">001</div>
+      <div class="card-title">Project Title</div>
+      <div class="card-desc">A design or art project — coming soon.</div>
+      <div class="card-tags"><span class="tag">Branding</span><span class="tag">TBD</span></div>
+      <div class="card-cta">Coming soon</div>
+    </div>
+    <div class="card placeholder reveal">
+      <div class="card-num">002</div>
+      <div class="card-title">Project Title</div>
+      <div class="card-desc">A design or art project — coming soon.</div>
+      <div class="card-tags"><span class="tag">Motion</span><span class="tag">TBD</span></div>
+      <div class="card-cta">Coming soon</div>
+    </div>
+    <div class="card placeholder reveal">
+      <div class="card-num">003</div>
+      <div class="card-title">Project Title</div>
+      <div class="card-desc">A design or art project — coming soon.</div>
+      <div class="card-tags"><span class="tag">Illustration</span><span class="tag">TBD</span></div>
+      <div class="card-cta">Coming soon</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BINZOKI<br>STUDIO</div>
+  <div class="footer-right">
+    <p>© 2026 Binzoki Studio</p>
+    <p>Built with obsession</p>
+  </div>
+</footer>
+
+<script>
+  // ── Cursor ──
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, .card:not(.placeholder)').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+  });
+
+  // ── Scroll reveal ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
