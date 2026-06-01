@@ -11,6 +11,8 @@ This repo powers the portfolio site at binzoki-studio.github.io/master
 │   └── snake.html      # Snake game (live)
 ├── asteroids-game/
 │   └── asteroids.html  # VOIDRIFT asteroids game (live)
+├── flappy-game/
+│   └── flappy.html     # FLAPVOID flappy bird game (live)
 └── CLAUDE.md           # This file
 
 ## index.html structure
@@ -58,6 +60,7 @@ This repo powers the portfolio site at binzoki-studio.github.io/master
 ## Games built so far
 - Snake: retro arcade, Press Start 2P font, green neon aesthetic, power-ups, themes, speed settings
 - VOIDRIFT (Asteroids): deep space, Orbitron font, cyan neon aesthetic, heat system, wave progression
+- FLAPVOID (Flappy Bird): deep space, Orbitron font, yellow/red neon aesthetic, screen shake, particles, persistent best score
 
 ## Standing instructions
 - Always update CLAUDE.md at the end of every session to reflect any new files, folders, games, or design changes made
