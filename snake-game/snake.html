@@ -4,11 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Snake</title>
+<script>(function(){const t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+  :root, [data-theme="dark"] {
+    --game-bg: #0a0a0a;
+  }
+  [data-theme="light"] {
+    --game-bg: #1a1a2e;
+  }
+
   :root {
-    --bg:          #0a0a0a;
+    --bg:          var(--game-bg, #0a0a0a);
     --grid-bg:     #0d1a0d;
     --grid-line:   #0f2a0f;
     --accent:      #39ff14;
@@ -146,9 +154,23 @@
 
   @keyframes blink   { 50%{opacity:0} }
   @keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1} 20%,24%,55%{opacity:0.55} }
+
+  /* ── Page theme toggle ── */
+  .page-theme-btn {
+    position:fixed; top:16px; right:16px; z-index:9999;
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(57,255,20,0.1); border:1px solid rgba(57,255,20,0.3);
+    color:var(--accent); font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(8px);
+    transition:background 0.2s, border-color 0.2s;
+  }
+  .page-theme-btn:hover { background:rgba(57,255,20,0.2); border-color:rgba(57,255,20,0.6); }
 </style>
 </head>
 <body>
+
+<button class="page-theme-btn" id="page-theme-btn" title="Toggle light/dark">🌙</button>
 
 <div class="container">
   <div class="header">
@@ -229,6 +251,21 @@
 </div>
 
 <script>
+// ── Page light/dark toggle ──────────────────────────
+(function(){
+  const btn  = document.getElementById('page-theme-btn');
+  const icon = btn;
+  function apply(t){
+    document.documentElement.setAttribute('data-theme', t);
+    icon.textContent = t === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('theme', t);
+  }
+  apply(localStorage.getItem('theme') || 'dark');
+  btn.addEventListener('click', () => {
+    apply(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+})();
+
 // ═══════════════════════════════════════════════════
 //  THEMES
 // ═══════════════════════════════════════════════════

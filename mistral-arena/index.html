@@ -4,20 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MISTRAL ARENA</title>
+<script>(function(){var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black:   #0a0a0a;
+  :root, [data-theme="dark"] {
+    --bg:      #0a0a0a;
     --surface: #111118;
     --card:    #14141e;
     --border:  rgba(245,240,232,0.07);
-    --white:   #f5f0e8;
+    --text:    #f5f0e8;
     --dim:     rgba(245,240,232,0.35);
     --accent:  #ffe600;
+    --accent-text: #0a0a0a;
     --grid:    rgba(245,240,232,0.03);
+    --nav-bg:  rgba(10,10,10,0.88);
+    --input-bg: rgba(245,240,232,0.04);
+    --drawer-bg: #0f0f1a;
+    --notice-bg: rgba(255,230,0,0.06);
+    --notice-border: rgba(255,230,0,0.18);
+    --notice-text: rgba(245,240,232,0.6);
+  }
 
-    /* Model colours */
+  [data-theme="light"] {
+    --bg:      #f5f1ea;
+    --surface: #ece8e0;
+    --card:    #ffffff;
+    --border:  rgba(20,18,14,0.1);
+    --text:    #1a1714;
+    --dim:     rgba(20,18,14,0.45);
+    --accent:  #d4a800;
+    --accent-text: #ffffff;
+    --grid:    rgba(20,18,14,0.04);
+    --nav-bg:  rgba(245,241,234,0.92);
+    --input-bg: rgba(20,18,14,0.04);
+    --drawer-bg: #ece8e0;
+    --notice-bg: rgba(212,168,0,0.08);
+    --notice-border: rgba(212,168,0,0.25);
+    --notice-text: rgba(20,18,14,0.6);
+  }
+
+  /* Model colours — unchanged across themes */
+  :root {
     --c-mistral-small:  #ff3c00;
     --c-mistral-medium: #7c3aed;
     --c-mistral-large:  #00b4a0;
@@ -30,8 +58,8 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--black);
-    color: var(--white);
+    background: var(--bg);
+    color: var(--text);
     font-family: 'DM Sans', sans-serif;
     font-weight: 300;
     min-height: 100vh;
@@ -53,7 +81,7 @@
     position: sticky; top: 0;
     display: flex; align-items: center; justify-content: space-between;
     padding: 18px 5vw;
-    background: rgba(10,10,10,0.88);
+    background: var(--nav-bg);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     z-index: 100;
@@ -100,11 +128,11 @@
     color: var(--dim); text-transform: uppercase;
   }
   .field textarea {
-    background: rgba(245,240,232,0.04);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 16px;
-    color: var(--white);
+    color: var(--text);
     font-family: 'DM Sans', sans-serif; font-size: 14px;
     transition: border-color 0.2s, box-shadow 0.2s;
     outline: none; width: 100%;
@@ -114,10 +142,10 @@
     border-color: rgba(255,230,0,0.4);
     box-shadow: 0 0 0 3px rgba(255,230,0,0.07);
   }
-  .field textarea::placeholder { color: rgba(245,240,232,0.2); }
+  .field textarea::placeholder { color: var(--dim); }
 
   .submit-btn {
-    background: var(--accent); color: #0a0a0a;
+    background: var(--accent); color: var(--accent-text);
     border: none; border-radius: 8px;
     padding: 13px 34px;
     font-family: 'Bebas Neue', sans-serif;
@@ -157,11 +185,11 @@
     padding: 6px 14px;
     border-radius: 100px;
     border: 1px solid var(--border);
-    background: rgba(245,240,232,0.03);
+    background: var(--input-bg);
     cursor: pointer;
     font-family: 'Space Mono', monospace;
     font-size: 10px; letter-spacing: 0.1em;
-    color: rgba(245,240,232,0.4);
+    color: var(--dim);
     transition: all 0.2s;
     user-select: none;
   }
@@ -176,7 +204,7 @@
     background: color-mix(in srgb, var(--pill-color) 10%, transparent);
   }
   .pill.active .dot { opacity: 1; }
-  .pill:hover:not(.active) { border-color: rgba(245,240,232,0.2); color: rgba(245,240,232,0.6); }
+  .pill:hover:not(.active) { border-color: var(--dim); color: var(--text); }
 
   /* ── ARENA ── */
   .arena {
@@ -246,7 +274,7 @@
   }
   .model-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px; letter-spacing: 0.04em; color: var(--white);
+    font-size: 20px; letter-spacing: 0.04em; color: var(--text);
   }
   .card-status-dot {
     width: 7px; height: 7px; border-radius: 50%;
@@ -311,7 +339,7 @@
     display: flex; gap: 16px;
     padding: 10px 22px;
     border-bottom: 1px solid var(--border);
-    background: rgba(245,240,232,0.02);
+    background: var(--input-bg);
     flex-wrap: wrap;
   }
   .meta-item { display: flex; flex-direction: column; gap: 2px; }
@@ -323,19 +351,19 @@
     font-family: 'Space Mono', monospace;
     font-size: 12px; font-weight: 700; color: var(--c);
   }
-  .meta-value.empty { color: rgba(245,240,232,0.12); }
+  .meta-value.empty { color: var(--dim); }
 
   /* ── CARD BODY ── */
   .card-body {
     flex: 1; padding: 20px 22px;
     font-size: 13px; line-height: 1.75;
-    color: rgba(245,240,232,0.78);
+    color: var(--text);
     overflow-y: auto;
     white-space: pre-wrap; word-break: break-word;
   }
   .card-body.placeholder {
     display: flex; align-items: center; justify-content: center;
-    color: rgba(245,240,232,0.1);
+    color: var(--dim);
     font-family: 'Space Mono', monospace;
     font-size: 10px; letter-spacing: 0.15em;
     text-transform: uppercase; text-align: center;
@@ -368,7 +396,7 @@
   /* Scrollbar */
   .card-body::-webkit-scrollbar { width: 3px; }
   .card-body::-webkit-scrollbar-track { background: transparent; }
-  .card-body::-webkit-scrollbar-thumb { background: rgba(245,240,232,0.08); border-radius: 2px; }
+  .card-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   /* ── PILL PROVIDER GROUP ── */
   .pill-group { display: flex; flex-direction: column; gap: 8px; }
@@ -434,7 +462,7 @@
     transition: border-color 0.2s, color 0.2s, transform 0.4s;
     display: flex; align-items: center; gap: 8px;
   }
-  .gear-btn:hover { border-color: rgba(245,240,232,0.2); color: var(--white); }
+  .gear-btn:hover { border-color: var(--dim); color: var(--text); }
   .gear-btn:hover .gear-icon { transform: rotate(60deg); }
   .gear-icon { display: inline-block; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
   .gear-btn .key-count {
@@ -448,7 +476,7 @@
   /* ── DRAWER OVERLAY ── */
   .drawer-overlay {
     position: fixed; inset: 0;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.5);
     backdrop-filter: blur(3px);
     z-index: 200;
     opacity: 0; pointer-events: none;
@@ -460,7 +488,7 @@
   .settings-drawer {
     position: fixed; top: 0; right: 0; bottom: 0;
     width: min(440px, 100vw);
-    background: #0f0f1a;
+    background: var(--drawer-bg);
     border-left: 1px solid var(--border);
     z-index: 201;
     display: flex; flex-direction: column;
@@ -486,11 +514,11 @@
     color: var(--dim); cursor: pointer; font-size: 18px; line-height: 1;
     transition: border-color 0.2s, color 0.2s;
   }
-  .drawer-close:hover { border-color: rgba(245,240,232,0.2); color: var(--white); }
+  .drawer-close:hover { border-color: var(--dim); color: var(--text); }
 
   .drawer-body { flex: 1; overflow-y: auto; padding: 28px; }
   .drawer-body::-webkit-scrollbar { width: 3px; }
-  .drawer-body::-webkit-scrollbar-thumb { background: rgba(245,240,232,0.08); border-radius: 2px; }
+  .drawer-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   /* First-load notice */
   .drawer-notice {
@@ -498,7 +526,7 @@
     border: 1px solid rgba(255,230,0,0.18);
     border-radius: 8px; padding: 14px 16px;
     margin-bottom: 28px;
-    font-size: 13px; line-height: 1.6; color: rgba(245,240,232,0.6);
+    font-size: 13px; line-height: 1.6; color: var(--notice-text);
     display: none;
   }
   .drawer-notice.visible { display: block; }
@@ -528,9 +556,9 @@
   .key-provider-name a:hover { opacity: 1; }
   .key-input-row { display: flex; gap: 8px; }
   .key-input-row input {
-    flex: 1; background: rgba(245,240,232,0.04);
+    flex: 1; background: var(--input-bg);
     border: 1px solid var(--border); border-radius: 8px;
-    padding: 11px 14px; color: var(--white);
+    padding: 11px 14px; color: var(--text);
     font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.05em;
     outline: none; transition: border-color 0.2s, box-shadow 0.2s;
   }
@@ -547,7 +575,7 @@
     color: var(--dim); cursor: pointer; font-size: 13px; line-height: 1;
     transition: border-color 0.2s; flex-shrink: 0;
   }
-  .key-toggle-vis:hover { border-color: rgba(245,240,232,0.2); }
+  .key-toggle-vis:hover { border-color: var(--dim); }
 
   .drawer-footer {
     padding: 18px 28px;
@@ -555,7 +583,7 @@
     display: flex; gap: 10px; align-items: center; flex-shrink: 0;
   }
   .save-btn {
-    flex: 1; background: var(--accent); color: #0a0a0a;
+    flex: 1; background: var(--accent); color: var(--accent-text);
     border: none; border-radius: 8px; padding: 12px 20px;
     font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.1em;
     cursor: pointer; transition: opacity 0.2s, transform 0.15s;
@@ -576,6 +604,25 @@
     transition: opacity 0.3s;
   }
   .save-feedback.show { opacity: 1; }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle {
+    background: none; border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 12px;
+    color: var(--dim); cursor: pointer; font-size: 14px; line-height: 1;
+    transition: border-color 0.2s, color 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--text); }
+  .theme-toggle .toggle-icon { display: inline-block; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+  .theme-toggle:hover .toggle-icon { transform: rotate(20deg) scale(1.2); }
+
+  /* Drawer notice themed */
+  .drawer-notice {
+    background: var(--notice-bg);
+    border-color: var(--notice-border);
+    color: var(--notice-text);
+  }
 </style>
 </head>
 <body>
@@ -587,6 +634,9 @@
     <button class="gear-btn" id="gear-btn" title="API Keys">
       <span class="gear-icon">⚙</span>
       <span class="key-count none" id="key-count">0/4 keys</span>
+    </button>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <span class="toggle-icon" id="toggle-icon">🌙</span>
     </button>
   </div>
 </nav>
@@ -688,6 +738,21 @@
 </main>
 
 <script>
+// ── Theme toggle ──────────────────────────────────────────────────────────────
+(function() {
+  const btn  = document.getElementById('theme-toggle');
+  const icon = document.getElementById('toggle-icon');
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    icon.textContent = t === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('theme', t);
+  }
+  applyTheme(localStorage.getItem('theme') || 'dark');
+  btn.addEventListener('click', () => {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+})();
+
 // ── API Key management ────────────────────────────────────────────────────────
 const PROVIDERS = ['mistral', 'openai', 'anthropic', 'google'];
 const LS_KEY = 'model_arena_keys';

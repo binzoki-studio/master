@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FLAPVOID — Flappy Bird</title>
+<script>(function(){var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
+  :root, [data-theme="dark"] { --game-bg: #0a0a0f; }
+  [data-theme="light"]        { --game-bg: #1a1a2e; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: #0a0a0f;
+    background: var(--game-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,11 +24,30 @@
     display: block;
     image-rendering: pixelated;
   }
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 9999;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 6px 13px;
+    color: rgba(255,255,255,0.6); cursor: pointer; font-size: 14px;
+    transition: background 0.2s, color 0.2s;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Orbitron', sans-serif;
+    backdrop-filter: blur(8px);
+  }
+  .theme-toggle:hover { background: rgba(255,255,255,0.14); color: #fff; }
 </style>
 </head>
 <body>
+<button class="theme-toggle" id="theme-toggle"><span id="toggle-icon">🌙</span></button>
 <canvas id="c"></canvas>
 <script>
+// ── Theme ──
+(function(){
+  var btn=document.getElementById('theme-toggle'),icon=document.getElementById('toggle-icon');
+  function applyTheme(t){document.documentElement.setAttribute('data-theme',t);icon.textContent=t==='dark'?'🌙':'☀️';localStorage.setItem('theme',t);}
+  applyTheme(localStorage.getItem('theme')||'dark');
+  btn.addEventListener('click',function(){applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');});
+})();
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 

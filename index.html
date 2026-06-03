@@ -4,18 +4,72 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Binzoki Studio</title>
+<script>(function(){var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #0a0a0a;
-    --white: #f5f0e8;
-    --games:   #ff3c00;
-    --popculture: #7c3aed;  
-    --design: #00b4a0;
-    --ai:     #f97316;
-    --accent: #ffe600;
-    --grid: rgba(245,240,232,0.04);
+  /* ── DARK THEME (default) ── */
+  :root, [data-theme="dark"] {
+    --bg:          #0a0a0a;
+    --bg-nav:      rgba(10,10,10,0.9);
+    --surface:     #111118;
+    --card-bg:     rgba(245,240,232,0.03);
+    --card-border: rgba(245,240,232,0.06);
+    --card-hover:  rgba(245,240,232,0.15);
+    --text:        #f5f0e8;
+    --text-mid:    rgba(245,240,232,0.45);
+    --text-dim:    rgba(245,240,232,0.2);
+    --footer-text: rgba(245,240,232,0.2);
+    --footer-logo: rgba(245,240,232,0.06);
+    --border:      rgba(245,240,232,0.08);
+    --grid:        rgba(245,240,232,0.04);
+    --marquee-bg:  rgba(245,240,232,0.02);
+    --section-num: rgba(245,240,232,0.2);
+    --tag-border:  rgba(245,240,232,0.12);
+    --tag-text:    rgba(245,240,232,0.35);
+    --cta-text:    rgba(245,240,232,0.3);
+    --placeholder-opacity: 0.35;
+    --hero-stroke: rgba(245,240,232,0.06);
+    --hero-scroll: rgba(245,240,232,0.3);
+    --scroll-line: rgba(245,240,232,0.3);
+    --games:       #ff3c00;
+    --popculture:  #7c3aed;
+    --design:      #00b4a0;
+    --ai:          #f97316;
+    --accent:      #ffe600;
+    --accent-text: #0a0a0a;
+  }
+
+  /* ── LIGHT THEME ── */
+  [data-theme="light"] {
+    --bg:          #f5f1ea;
+    --bg-nav:      rgba(245,241,234,0.92);
+    --surface:     #ede9e0;
+    --card-bg:     rgba(255,255,255,0.7);
+    --card-border: rgba(20,18,14,0.08);
+    --card-hover:  rgba(20,18,14,0.14);
+    --text:        #1a1714;
+    --text-mid:    rgba(20,18,14,0.5);
+    --text-dim:    rgba(20,18,14,0.3);
+    --footer-text: rgba(20,18,14,0.3);
+    --footer-logo: rgba(20,18,14,0.07);
+    --border:      rgba(20,18,14,0.1);
+    --grid:        rgba(20,18,14,0.04);
+    --marquee-bg:  rgba(20,18,14,0.03);
+    --section-num: rgba(20,18,14,0.25);
+    --tag-border:  rgba(20,18,14,0.14);
+    --tag-text:    rgba(20,18,14,0.45);
+    --cta-text:    rgba(20,18,14,0.35);
+    --placeholder-opacity: 0.4;
+    --hero-stroke: rgba(20,18,14,0.06);
+    --hero-scroll: rgba(20,18,14,0.3);
+    --scroll-line: rgba(20,18,14,0.25);
+    --games:       #d42d00;
+    --popculture:  #6d28d9;
+    --design:      #007a6e;
+    --ai:          #c2560a;
+    --accent:      #d4a800;
+    --accent-text: #ffffff;
   }
 
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -23,8 +77,8 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--black);
-    color: var(--white);
+    background: var(--bg);
+    color: var(--text);
     font-family: 'DM Sans', sans-serif;
     font-weight: 300;
     overflow-x: hidden;
@@ -77,7 +131,7 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(120px, 22vw, 320px);
     color: transparent;
-    -webkit-text-stroke: 1px rgba(245,240,232,0.06);
+    -webkit-text-stroke: 1px var(--hero-stroke);
     white-space: nowrap;
     pointer-events: none;
     user-select: none;
@@ -120,7 +174,7 @@
     max-width: 480px;
     font-size: 16px;
     line-height: 1.7;
-    color: rgba(245,240,232,0.5);
+    color: var(--text-mid);
     margin-bottom: 48px;
     opacity: 0;
     animation: fadein 0.8s 0.7s forwards;
@@ -130,7 +184,7 @@
     font-family: 'Space Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.2em;
-    color: rgba(245,240,232,0.3);
+    color: var(--hero-scroll);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -142,7 +196,7 @@
     content: '';
     display: block;
     width: 40px; height: 1px;
-    background: rgba(245,240,232,0.3);
+    background: var(--scroll-line);
   }
 
   /* ── NAV ── */
@@ -161,7 +215,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(10,10,10,0.9), transparent);
+    background: linear-gradient(to bottom, var(--bg-nav), transparent);
     pointer-events: none;
     z-index: -1;
   }
@@ -170,7 +224,7 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: 22px;
     letter-spacing: 0.08em;
-    color: var(--white);
+    color: var(--text);
     text-decoration: none;
   }
 
@@ -186,13 +240,13 @@
     font-family: 'Space Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.15em;
-    color: rgba(245,240,232,0.45);
+    color: var(--text-mid);
     text-decoration: none;
     text-transform: uppercase;
     transition: color 0.2s;
   }
 
-  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover { color: var(--text); }
 
   /* ── SECTION BASE ── */
   section {
@@ -206,7 +260,7 @@
     align-items: flex-end;
     justify-content: space-between;
     margin-bottom: 64px;
-    border-bottom: 1px solid rgba(245,240,232,0.08);
+    border-bottom: 1px solid var(--border);
     padding-bottom: 24px;
   }
 
@@ -228,7 +282,7 @@
   .section-count {
     font-family: 'Space Mono', monospace;
     font-size: 11px;
-    color: rgba(245,240,232,0.25);
+    color: var(--section-num);
     letter-spacing: 0.1em;
     padding-bottom: 4px;
   }
@@ -258,13 +312,13 @@
 
   .card {
     position: relative;
-    background: rgba(245,240,232,0.03);
-    border: 1px solid rgba(245,240,232,0.06);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     padding: 36px;
     overflow: hidden;
     transition: background 0.3s, border-color 0.3s;
     text-decoration: none;
-    color: var(--white);
+    color: var(--text);
     display: block;
     cursor: none;
   }
@@ -278,7 +332,7 @@
   }
 
   .card:hover::before { opacity: 1; }
-  .card:hover { border-color: rgba(245,240,232,0.15); }
+  .card:hover { border-color: var(--card-hover); }
 
   /* Color tints per section */
   #games   .card::before { background: linear-gradient(135deg, rgba(255,60,0,0.08), transparent); }
@@ -290,7 +344,7 @@
     font-family: 'Space Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.2em;
-    color: rgba(245,240,232,0.2);
+    color: var(--section-num);
     margin-bottom: 24px;
   }
 
@@ -311,7 +365,7 @@
   .card-desc {
     font-size: 13px;
     line-height: 1.65;
-    color: rgba(245,240,232,0.4);
+    color: var(--text-dim);
     margin-bottom: 32px;
   }
 
@@ -328,8 +382,8 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     padding: 4px 10px;
-    border: 1px solid rgba(245,240,232,0.12);
-    color: rgba(245,240,232,0.35);
+    border: 1px solid var(--tag-border);
+    color: var(--tag-text);
   }
 
   .card-cta {
@@ -340,7 +394,7 @@
     font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: rgba(245,240,232,0.3);
+    color: var(--cta-text);
     transition: color 0.2s, gap 0.2s;
   }
 
@@ -375,30 +429,30 @@
     text-transform: uppercase;
     padding: 5px 12px;
     background: var(--games);
-    color: var(--black);
+    color: var(--accent-text);
     font-weight: 700;
     margin-bottom: 20px;
   }
 
   /* ── PLACEHOLDER CARD ── */
   .card.placeholder {
-    opacity: 0.35;
+    opacity: var(--placeholder-opacity);
     pointer-events: none;
   }
 
   .card.placeholder .card-title::after {
     content: ' —';
-    color: rgba(245,240,232,0.2);
+    color: var(--text-dim);
   }
 
   /* ── DIVIDER ── */
   .marquee-divider {
     position: relative;
     overflow: hidden;
-    border-top: 1px solid rgba(245,240,232,0.06);
-    border-bottom: 1px solid rgba(245,240,232,0.06);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     padding: 14px 0;
-    background: rgba(245,240,232,0.02);
+    background: var(--marquee-bg);
     z-index: 1;
   }
 
@@ -413,7 +467,7 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: 13px;
     letter-spacing: 0.3em;
-    color: rgba(245,240,232,0.12);
+    color: var(--text-dim);
     padding: 0 40px;
     white-space: nowrap;
   }
@@ -429,7 +483,7 @@
   footer {
     position: relative;
     padding: 80px 6vw 48px;
-    border-top: 1px solid rgba(245,240,232,0.06);
+    border-top: 1px solid var(--border);
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -440,7 +494,7 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(48px, 8vw, 100px);
     line-height: 1;
-    color: rgba(245,240,232,0.06);
+    color: var(--footer-logo);
     letter-spacing: -0.01em;
   }
 
@@ -452,9 +506,26 @@
     font-family: 'Space Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.15em;
-    color: rgba(245,240,232,0.2);
+    color: var(--footer-text);
     line-height: 2;
   }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px;
+    color: var(--text-mid);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    transition: border-color 0.2s, color 0.2s, transform 0.3s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--text); }
+  .theme-toggle .toggle-icon { display: inline-block; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+  .theme-toggle:hover .toggle-icon { transform: rotate(20deg) scale(1.2); }
 
   /* ── ANIMATIONS ── */
   @keyframes fadein  { from { opacity:0 } to { opacity:1 } }
@@ -491,6 +562,9 @@
     <li><a href="#ai">AI</a></li>
     <li><a href="#design">Design</a></li>
   </ul>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <span class="toggle-icon" id="toggle-icon">🌙</span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -775,6 +849,19 @@
 </footer>
 
 <script>
+  // ── Theme toggle ──
+  const toggleBtn  = document.getElementById('theme-toggle');
+  const toggleIcon = document.getElementById('toggle-icon');
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    toggleIcon.textContent = t === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('theme', t);
+  }
+  applyTheme(localStorage.getItem('theme') || 'dark');
+  toggleBtn.addEventListener('click', () => {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
   // ── Cursor ──
   const cursor = document.getElementById('cursor');
   document.addEventListener('mousemove', e => {

@@ -4,10 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOIDRIFT — Asteroids</title>
+<script>(function(){const t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
+  :root, [data-theme="dark"] {
+    --game-bg: #03050f;
+  }
+  [data-theme="light"] {
+    --game-bg: #0d1b2e;
+  }
+
   :root {
-    --void: #03050f;
+    --void: var(--game-bg, #03050f);
     --plasma: #00f5ff;
     --hot: #ff4d00;
     --warn: #ffe600;
@@ -196,9 +204,23 @@
     box-shadow: 0 0 6px currentColor;
   }
   .heat-fill.hot { background: var(--hot); }
+
+  /* ── Page theme toggle ── */
+  .page-theme-btn {
+    position:fixed; top:16px; right:16px; z-index:9999;
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(0,245,255,0.1); border:1px solid rgba(0,245,255,0.3);
+    color:var(--plasma); font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(8px);
+    transition:background 0.2s, border-color 0.2s;
+  }
+  .page-theme-btn:hover { background:rgba(0,245,255,0.2); border-color:rgba(0,245,255,0.6); }
 </style>
 </head>
 <body>
+
+<button class="page-theme-btn" id="page-theme-btn" title="Toggle light/dark">🌙</button>
 
 <div class="shell">
   <!-- TOP HUD -->
@@ -261,6 +283,20 @@
 </div>
 
 <script>
+// ── Page light/dark toggle ──────────────────────────
+(function(){
+  const btn = document.getElementById('page-theme-btn');
+  function apply(t){
+    document.documentElement.setAttribute('data-theme', t);
+    btn.textContent = t === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('theme', t);
+  }
+  apply(localStorage.getItem('theme') || 'dark');
+  btn.addEventListener('click', () => {
+    apply(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+})();
+
 // ═══════════════════════════════════════════════
 //  SETUP
 // ═══════════════════════════════════════════════
