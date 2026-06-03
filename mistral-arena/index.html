@@ -15,10 +15,15 @@
     --white:   #f5f0e8;
     --dim:     rgba(245,240,232,0.35);
     --accent:  #ffe600;
-    --small:   #ff3c00;
-    --medium:  #7c3aed;
-    --large:   #00b4a0;
     --grid:    rgba(245,240,232,0.03);
+
+    /* Model colours */
+    --c-mistral-small:  #ff3c00;
+    --c-mistral-medium: #7c3aed;
+    --c-mistral-large:  #00b4a0;
+    --c-openai:         #10a37f;
+    --c-anthropic:      #d97706;
+    --c-google:         #4285f4;
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,7 +38,6 @@
     overflow-x: hidden;
   }
 
-  /* Grid background */
   body::before {
     content: '';
     position: fixed; inset: 0;
@@ -41,110 +45,81 @@
       linear-gradient(var(--grid) 1px, transparent 1px),
       linear-gradient(90deg, var(--grid) 1px, transparent 1px);
     background-size: 60px 60px;
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
   /* ── NAV ── */
   nav {
     position: sticky; top: 0;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 5vw;
-    background: rgba(10,10,10,0.85);
+    padding: 18px 5vw;
+    background: rgba(10,10,10,0.88);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     z-index: 100;
   }
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 24px; letter-spacing: 0.1em;
-  }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.1em; }
   .nav-logo span { color: var(--accent); }
   .nav-tag {
     font-family: 'Space Mono', monospace;
-    font-size: 10px; letter-spacing: 0.25em;
+    font-size: 10px; letter-spacing: 0.22em;
     color: var(--dim); text-transform: uppercase;
   }
 
   /* ── MAIN ── */
-  main {
-    position: relative; z-index: 1;
-    max-width: 1400px; margin: 0 auto;
-    padding: 48px 5vw 80px;
-  }
+  main { position: relative; z-index: 1; max-width: 1600px; margin: 0 auto; padding: 44px 5vw 80px; }
 
   /* ── HEADER ── */
-  .page-header { margin-bottom: 48px; }
+  .page-header { margin-bottom: 44px; }
   .page-label {
     font-family: 'Space Mono', monospace;
     font-size: 10px; letter-spacing: 0.3em;
-    color: var(--accent); text-transform: uppercase;
-    margin-bottom: 12px;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 12px;
   }
   .page-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(52px, 8vw, 100px);
-    line-height: 0.92; letter-spacing: -0.01em;
-    margin-bottom: 16px;
+    font-size: clamp(48px, 7vw, 90px);
+    line-height: 0.92; letter-spacing: -0.01em; margin-bottom: 14px;
   }
   .page-title em { font-style: normal; color: var(--accent); }
-  .page-desc {
-    font-size: 15px; line-height: 1.7;
-    color: var(--dim); max-width: 520px;
-  }
+  .page-desc { font-size: 14px; line-height: 1.7; color: var(--dim); max-width: 500px; }
 
   /* ── CONFIG PANEL ── */
   .config-panel {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 32px;
-    margin-bottom: 40px;
+    padding: 28px 32px 22px;
+    margin-bottom: 32px;
   }
-  .config-row {
-    display: flex; gap: 16px; align-items: flex-end;
-    flex-wrap: wrap;
-  }
-  .field { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
+  .config-row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+  .field { display: flex; flex-direction: column; gap: 7px; flex: 1; min-width: 200px; }
   .field-label {
     font-family: 'Space Mono', monospace;
-    font-size: 10px; letter-spacing: 0.2em;
+    font-size: 9px; letter-spacing: 0.22em;
     color: var(--dim); text-transform: uppercase;
   }
-  .field input, .field textarea {
+  .field textarea {
     background: rgba(245,240,232,0.04);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 16px;
     color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
     transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
-    width: 100%;
+    outline: none; width: 100%;
+    min-height: 72px; resize: vertical; line-height: 1.6;
   }
-  .field input:focus, .field textarea:focus {
+  .field textarea:focus {
     border-color: rgba(255,230,0,0.4);
     box-shadow: 0 0 0 3px rgba(255,230,0,0.07);
   }
-  .field input[type="password"] { font-family: 'Space Mono', monospace; letter-spacing: 0.1em; }
-  .field textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
-  .key-row { display: flex; gap: 10px; align-items: center; }
-  .key-row input { flex: 1; }
-  .key-toggle {
-    background: none; border: 1px solid var(--border);
-    border-radius: 6px; padding: 12px 14px;
-    color: var(--dim); cursor: pointer; font-size: 14px;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .key-toggle:hover { border-color: rgba(245,240,232,0.2); color: var(--white); }
+  .field textarea::placeholder { color: rgba(245,240,232,0.2); }
 
-  /* ── SUBMIT ── */
   .submit-btn {
-    background: var(--accent);
-    color: #0a0a0a;
+    background: var(--accent); color: #0a0a0a;
     border: none; border-radius: 8px;
-    padding: 14px 36px;
+    padding: 13px 34px;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 18px; letter-spacing: 0.1em;
     cursor: pointer; white-space: nowrap;
@@ -157,67 +132,92 @@
   }
   .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-  /* ── STATUS BAR ── */
   .status-bar {
     font-family: 'Space Mono', monospace;
-    font-size: 11px; letter-spacing: 0.1em;
-    color: var(--dim); padding: 0 4px;
-    margin-top: 12px; min-height: 18px;
+    font-size: 10px; letter-spacing: 0.12em;
+    color: var(--dim); margin-top: 12px; min-height: 16px;
     transition: color 0.2s;
   }
-  .status-bar.error { color: var(--small); }
-  .status-bar.ok { color: var(--large); }
+  .status-bar.error { color: #ff3c00; }
+  .status-bar.ok    { color: #00b4a0; }
 
-  /* ── ARENA GRID ── */
+  /* ── MODEL SELECTOR ── */
+  .selector-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--dim);
+    margin-bottom: 12px;
+  }
+  .model-pills {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 28px;
+  }
+  .pill {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: rgba(245,240,232,0.03);
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em;
+    color: rgba(245,240,232,0.4);
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; opacity: 0.4;
+    transition: opacity 0.2s;
+  }
+  .pill.active {
+    border-color: var(--pill-color);
+    color: var(--pill-color);
+    background: color-mix(in srgb, var(--pill-color) 10%, transparent);
+  }
+  .pill.active .dot { opacity: 1; }
+  .pill:hover:not(.active) { border-color: rgba(245,240,232,0.2); color: rgba(245,240,232,0.6); }
+
+  /* ── ARENA ── */
   .arena {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2px;
   }
-  @media (max-width: 900px) { .arena { grid-template-columns: 1fr; } }
+  @media (max-width: 1100px) { .arena { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 680px)  { .arena { grid-template-columns: 1fr; } }
 
   /* ── MODEL CARD ── */
   .model-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 0;
     overflow: hidden;
     display: flex; flex-direction: column;
-    min-height: 300px;
-    transition: border-color 0.3s;
+    min-height: 280px;
+    transition: border-color 0.3s, opacity 0.25s;
+    position: relative;
   }
-  .model-card:first-child { border-radius: 12px 0 0 12px; }
-  .model-card:last-child  { border-radius: 0 12px 12px 0; }
-  @media (max-width: 900px) {
-    .model-card, .model-card:first-child, .model-card:last-child {
-      border-radius: 12px;
-    }
+  .model-card:first-child  { border-radius: 12px 0 0 12px; }
+  .model-card:last-child   { border-radius: 0 12px 12px 0; }
+  .model-card:only-child   { border-radius: 12px; }
+  @media (max-width: 1100px) {
+    .model-card:nth-child(odd):last-child { border-radius: 0 0 12px 12px; }
   }
 
-  .model-card[data-model="small"]  { --accent-c: var(--small); }
-  .model-card[data-model="medium"] { --accent-c: var(--medium); }
-  .model-card[data-model="large"]  { --accent-c: var(--large); }
-
-  .model-card.loading { border-color: color-mix(in srgb, var(--accent-c) 20%, transparent); }
-  .model-card.done    { border-color: color-mix(in srgb, var(--accent-c) 25%, transparent); }
+  .model-card.loading { border-color: color-mix(in srgb, var(--c) 22%, transparent); }
+  .model-card.done    { border-color: color-mix(in srgb, var(--c) 28%, transparent); }
   .model-card.errored { border-color: rgba(255,60,0,0.25); }
 
-  /* ── Progress bar ── */
+  /* Shimmer bar */
   .model-card::after {
     content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg,
-      transparent 0%,
-      var(--accent-c) 40%,
-      color-mix(in srgb, var(--accent-c) 60%, white) 50%,
-      var(--accent-c) 60%,
-      transparent 100%);
+      transparent 0%, var(--c) 40%,
+      color-mix(in srgb, var(--c) 60%, white) 50%,
+      var(--c) 60%, transparent 100%);
     background-size: 200% 100%;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
+    opacity: 0; transition: opacity 0.3s; pointer-events: none;
   }
   .model-card.loading::after {
     opacity: 1;
@@ -228,159 +228,145 @@
     100% { background-position: -200% center; }
   }
 
+  /* ── CARD HEAD ── */
   .card-head {
-    padding: 20px 24px 16px;
+    padding: 18px 22px 14px;
     border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
   }
-  .card-head-left { display: flex; flex-direction: column; gap: 4px; }
+  .card-head-left { display: flex; flex-direction: column; gap: 3px; }
   .model-badge {
     font-family: 'Space Mono', monospace;
-    font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
-    color: var(--accent-c);
+    font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--c);
     padding: 3px 8px; border-radius: 4px;
-    background: color-mix(in srgb, var(--accent-c) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--accent-c) 25%, transparent);
+    background: color-mix(in srgb, var(--c) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 22%, transparent);
     display: inline-block; width: fit-content;
   }
   .model-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px; letter-spacing: 0.05em;
-    color: var(--white);
+    font-size: 20px; letter-spacing: 0.04em; color: var(--white);
   }
   .card-status-dot {
-    width: 8px; height: 8px; border-radius: 50%;
+    width: 7px; height: 7px; border-radius: 50%;
     background: var(--border); flex-shrink: 0;
     transition: background 0.3s, box-shadow 0.3s;
   }
   .model-card.loading .card-status-dot {
     background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
+    box-shadow: 0 0 7px var(--accent);
     animation: pulse-dot 0.8s ease-in-out infinite alternate;
   }
   .model-card.done .card-status-dot {
-    background: var(--accent-c);
-    box-shadow: 0 0 8px var(--accent-c);
+    background: var(--c);
+    box-shadow: 0 0 7px var(--c);
   }
-  .model-card.errored .card-status-dot { background: var(--small); }
-
-  @keyframes pulse-dot {
-    from { opacity: 1; } to { opacity: 0.3; }
-  }
+  .model-card.errored .card-status-dot { background: #ff3c00; }
+  @keyframes pulse-dot { from { opacity: 1; } to { opacity: 0.25; } }
 
   /* ── META ROW ── */
   .card-meta {
-    display: flex; gap: 20px;
-    padding: 12px 24px;
+    display: flex; gap: 16px;
+    padding: 10px 22px;
     border-bottom: 1px solid var(--border);
     background: rgba(245,240,232,0.02);
+    flex-wrap: wrap;
   }
   .meta-item { display: flex; flex-direction: column; gap: 2px; }
   .meta-label {
     font-family: 'Space Mono', monospace;
-    font-size: 8px; letter-spacing: 0.25em;
-    text-transform: uppercase; color: var(--dim);
+    font-size: 7px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim);
   }
   .meta-value {
     font-family: 'Space Mono', monospace;
-    font-size: 13px; font-weight: 700;
-    color: var(--accent-c);
+    font-size: 12px; font-weight: 700; color: var(--c);
   }
-  .meta-value.empty { color: rgba(245,240,232,0.15); }
+  .meta-value.empty { color: rgba(245,240,232,0.12); }
 
-  /* ── RESPONSE BODY ── */
+  /* ── CARD BODY ── */
   .card-body {
-    flex: 1; padding: 24px;
-    font-size: 14px; line-height: 1.75;
-    color: rgba(245,240,232,0.8);
+    flex: 1; padding: 20px 22px;
+    font-size: 13px; line-height: 1.75;
+    color: rgba(245,240,232,0.78);
     overflow-y: auto;
     white-space: pre-wrap; word-break: break-word;
   }
   .card-body.placeholder {
     display: flex; align-items: center; justify-content: center;
-    color: rgba(245,240,232,0.12);
+    color: rgba(245,240,232,0.1);
     font-family: 'Space Mono', monospace;
-    font-size: 11px; letter-spacing: 0.15em;
+    font-size: 10px; letter-spacing: 0.15em;
     text-transform: uppercase; text-align: center;
   }
 
-  /* ── Thinking dots ── */
+  /* Thinking dots */
   .thinking-dots {
     display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 20px;
-    height: 100%;
+    flex-direction: column; gap: 16px; height: 100%;
   }
-  .thinking-dots-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px; letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--accent-c);
-    opacity: 0.6;
-  }
-  .thinking-dots-row {
-    display: flex; gap: 8px; align-items: center;
-  }
+  .thinking-dots-row { display: flex; gap: 8px; align-items: center; }
   .thinking-dots-row span {
-    display: block;
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--accent-c);
-    opacity: 0.2;
+    display: block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--c); opacity: 0.15;
     animation: dot-bounce 1.2s ease-in-out infinite;
   }
   .thinking-dots-row span:nth-child(1) { animation-delay: 0s; }
   .thinking-dots-row span:nth-child(2) { animation-delay: 0.2s; }
   .thinking-dots-row span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes dot-bounce {
-    0%, 80%, 100% { opacity: 0.15; transform: scale(1); }
+    0%, 80%, 100% { opacity: 0.12; transform: scale(1); }
     40%           { opacity: 1;    transform: scale(1.4); }
   }
+  .thinking-dots-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--c); opacity: 0.5;
+  }
+
+  /* Scrollbar */
+  .card-body::-webkit-scrollbar { width: 3px; }
+  .card-body::-webkit-scrollbar-track { background: transparent; }
+  .card-body::-webkit-scrollbar-thumb { background: rgba(245,240,232,0.08); border-radius: 2px; }
 
   /* ── SECTION DIVIDER ── */
   .section-divider {
-    display: flex; align-items: center; gap: 20px;
-    margin: 48px 0 32px;
+    display: flex; align-items: center; gap: 18px;
+    margin: 40px 0 28px;
   }
   .section-divider-label {
     font-family: 'Space Mono', monospace;
-    font-size: 10px; letter-spacing: 0.3em;
-    text-transform: uppercase; color: var(--dim);
-    white-space: nowrap;
+    font-size: 9px; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--dim); white-space: nowrap;
   }
   .section-divider-line { flex: 1; height: 1px; background: var(--border); }
-
-  /* Scrollbar */
-  .card-body::-webkit-scrollbar { width: 4px; }
-  .card-body::-webkit-scrollbar-track { background: transparent; }
-  .card-body::-webkit-scrollbar-thumb { background: rgba(245,240,232,0.1); border-radius: 2px; }
 </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-logo">BINZOKI<span>.</span>STUDIO</div>
-  <div class="nav-tag">Mistral Arena · Model Comparison</div>
+  <div class="nav-tag">Model Arena · 6 Providers</div>
 </nav>
 
 <main>
   <div class="page-header">
     <div class="page-label">// Tool — 001</div>
-    <h1 class="page-title">MISTRAL<br><em>ARENA</em></h1>
-    <p class="page-desc">Fire one prompt at three Mistral models simultaneously. Compare speed, verbosity and quality side by side.</p>
+    <h1 class="page-title">MODEL<br><em>ARENA</em></h1>
+    <p class="page-desc">Fire one prompt at six models across four providers simultaneously. Compare speed, quality and token cost side by side.</p>
   </div>
 
   <!-- Config -->
   <div class="config-panel">
+    <!-- Model selector -->
+    <div class="selector-label">Select Models</div>
+    <div class="model-pills" id="pill-row"></div>
+
+    <!-- Prompt + fire -->
     <div class="config-row">
-      <div class="field" style="max-width:320px;">
-        <label class="field-label" for="api-key">Mistral API Key</label>
-        <div class="key-row">
-          <input type="password" id="api-key" placeholder="••••••••••••••••••••" autocomplete="off" spellcheck="false">
-          <button class="key-toggle" id="key-toggle" title="Show/hide key">👁</button>
-        </div>
-      </div>
       <div class="field">
-        <label class="field-label" for="prompt">Prompt</label>
-        <textarea id="prompt" placeholder="Enter your prompt… (Enter to fire, Shift+Enter for newline)" spellcheck="false"></textarea>
+        <label class="field-label" for="prompt">Prompt <span style="color:rgba(245,240,232,0.2);">— Enter to fire · Shift+Enter for newline</span></label>
+        <textarea id="prompt" placeholder="Enter your prompt…" spellcheck="false"></textarea>
       </div>
       <button class="submit-btn" id="submit-btn">FIRE</button>
     </div>
@@ -392,259 +378,189 @@
     <div class="section-divider-label">// Responses</div>
     <div class="section-divider-line"></div>
   </div>
-
-  <div class="arena" id="arena">
-    <div class="model-card" data-model="small">
-      <div class="card-head">
-        <div class="card-head-left">
-          <span class="model-badge">Small</span>
-          <span class="model-name">mistral-small-latest</span>
-        </div>
-        <div class="card-status-dot"></div>
-      </div>
-      <div class="card-meta">
-        <div class="meta-item">
-          <span class="meta-label">Time</span>
-          <span class="meta-value empty" id="small-time">—</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Tokens (in)</span>
-          <span class="meta-value empty" id="small-tok-in">—</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Tokens (out)</span>
-          <span class="meta-value empty" id="small-tok-out">—</span>
-        </div>
-      </div>
-      <div class="card-body placeholder" id="small-body">AWAITING PROMPT</div>
-    </div>
-
-    <div class="model-card" data-model="medium">
-      <div class="card-head">
-        <div class="card-head-left">
-          <span class="model-badge">Medium</span>
-          <span class="model-name">mistral-medium-latest</span>
-        </div>
-        <div class="card-status-dot"></div>
-      </div>
-      <div class="card-meta">
-        <div class="meta-item">
-          <span class="meta-label">Time</span>
-          <span class="meta-value empty" id="medium-time">—</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Tokens (in)</span>
-          <span class="meta-value empty" id="medium-tok-in">—</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Tokens (out)</span>
-          <span class="meta-value empty" id="medium-tok-out">—</span>
-        </div>
-      </div>
-      <div class="card-body placeholder" id="medium-body">AWAITING PROMPT</div>
-    </div>
-
-    <div class="model-card" data-model="large">
-      <div class="card-head">
-        <div class="card-head-left">
-          <span class="model-badge">Large</span>
-          <span class="model-name">mistral-large-latest</span>
-        </div>
-        <div class="card-status-dot"></div>
-      </div>
-      <div class="card-meta">
-        <div class="meta-item">
-          <span class="meta-label">Time</span>
-          <span class="meta-value empty" id="large-time">—</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Tokens (in)</span>
-          <span class="meta-value empty" id="large-tok-in">—</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Tokens (out)</span>
-          <span class="meta-value empty" id="large-tok-out">—</span>
-        </div>
-      </div>
-      <div class="card-body placeholder" id="large-body">AWAITING PROMPT</div>
-    </div>
-  </div>
+  <div class="arena" id="arena"></div>
 </main>
 
 <script>
-const MODELS = ['small', 'medium', 'large'];
-const MODEL_IDS = {
-  small:  'mistral-small-latest',
-  medium: 'mistral-medium-latest',
-  large:  'mistral-large-latest',
-};
+// ── Model definitions ─────────────────────────────────────────────────────────
+const MODELS = [
+  { key: 'mistral-small',  provider: 'mistral',   id: 'mistral-small-latest',  label: 'Mistral Small',  badge: 'Mistral',   color: '#ff3c00' },
+  { key: 'mistral-medium', provider: 'mistral',   id: 'mistral-medium-latest', label: 'Mistral Medium', badge: 'Mistral',   color: '#7c3aed' },
+  { key: 'mistral-large',  provider: 'mistral',   id: 'mistral-large-latest',  label: 'Mistral Large',  badge: 'Mistral',   color: '#00b4a0' },
+  { key: 'gpt-4o-mini',    provider: 'openai',    id: 'gpt-4o-mini',           label: 'GPT-4o Mini',    badge: 'OpenAI',    color: '#10a37f' },
+  { key: 'claude-haiku',   provider: 'anthropic', id: 'claude-haiku-4-5',      label: 'Claude Haiku',   badge: 'Anthropic', color: '#d97706' },
+  { key: 'gemini-flash',   provider: 'google',    id: 'gemini-1.5-flash',      label: 'Gemini Flash',   badge: 'Google',    color: '#4285f4' },
+];
 
-// ── Restore saved key ──
-const keyInput    = document.getElementById('api-key');
+// All active by default
+const active = new Set(MODELS.map(m => m.key));
+
+// ── Build pill row ────────────────────────────────────────────────────────────
+const pillRow = document.getElementById('pill-row');
+for (const m of MODELS) {
+  const pill = document.createElement('button');
+  pill.className = 'pill active';
+  pill.dataset.key = m.key;
+  pill.style.setProperty('--pill-color', m.color);
+  pill.innerHTML = `<span class="dot"></span>${m.label}`;
+  pill.addEventListener('click', () => togglePill(m.key, pill));
+  pillRow.appendChild(pill);
+}
+
+function togglePill(key, pill) {
+  if (active.has(key)) {
+    if (active.size === 1) return; // keep at least one
+    active.delete(key);
+    pill.classList.remove('active');
+  } else {
+    active.add(key);
+    pill.classList.add('active');
+  }
+  renderCards();
+}
+
+// ── Build arena cards ─────────────────────────────────────────────────────────
+const arena = document.getElementById('arena');
+
+function renderCards() {
+  arena.innerHTML = '';
+  const selected = MODELS.filter(m => active.has(m.key));
+  for (const m of selected) {
+    const card = document.createElement('div');
+    card.className = 'model-card';
+    card.id = `card-${m.key}`;
+    card.style.setProperty('--c', m.color);
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="card-head-left">
+          <span class="model-badge">${m.badge}</span>
+          <span class="model-name">${m.label}</span>
+        </div>
+        <div class="card-status-dot"></div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item">
+          <span class="meta-label">Time</span>
+          <span class="meta-value empty" id="${m.key}-time">—</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Tokens in</span>
+          <span class="meta-value empty" id="${m.key}-tok-in">—</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Tokens out</span>
+          <span class="meta-value empty" id="${m.key}-tok-out">—</span>
+        </div>
+      </div>
+      <div class="card-body placeholder" id="${m.key}-body">AWAITING PROMPT</div>`;
+    arena.appendChild(card);
+  }
+
+  // Fix border-radius for first/last in current layout
+  const cards = arena.querySelectorAll('.model-card');
+  cards.forEach((c, i) => {
+    c.style.borderRadius = '';
+  });
+  if (cards.length === 1) {
+    cards[0].style.borderRadius = '12px';
+  } else {
+    cards[0].style.borderRadius = '12px 0 0 12px';
+    cards[cards.length - 1].style.borderRadius = '0 12px 12px 0';
+  }
+}
+
+renderCards();
+
+// ── DOM helpers ───────────────────────────────────────────────────────────────
 const promptInput = document.getElementById('prompt');
 const submitBtn   = document.getElementById('submit-btn');
 const statusBar   = document.getElementById('status-bar');
-const keyToggle   = document.getElementById('key-toggle');
 
-const saved = localStorage.getItem('mistral_arena_key');
-if (saved) keyInput.value = saved;
-
-// ── Toggle key visibility ──
-keyToggle.addEventListener('click', () => {
-  const isHidden = keyInput.type === 'password';
-  keyInput.type = isHidden ? 'text' : 'password';
-  keyToggle.textContent = isHidden ? '🙈' : '👁';
-});
-
-// Save key on change
-keyInput.addEventListener('input', () => {
-  const v = keyInput.value.trim();
-  if (v) localStorage.setItem('mistral_arena_key', v);
-  else   localStorage.removeItem('mistral_arena_key');
-});
-
-// ── Submit on Enter (Shift+Enter for newline) ──
-promptInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fire(); }
-});
-submitBtn.addEventListener('click', fire);
-
-// ── Helpers ──
 function setStatus(msg, type = '') {
   statusBar.textContent = msg;
   statusBar.className = 'status-bar' + (type ? ' ' + type : '');
 }
+function card(key)   { return document.getElementById(`card-${key}`); }
+function body(key)   { return document.getElementById(`${key}-body`); }
+function timeEl(key) { return document.getElementById(`${key}-time`); }
+function tokIn(key)  { return document.getElementById(`${key}-tok-in`); }
+function tokOut(key) { return document.getElementById(`${key}-tok-out`); }
 
-function cardEl(model)    { return document.querySelector(`.model-card[data-model="${model}"]`); }
-function bodyEl(model)    { return document.getElementById(`${model}-body`); }
-function timeEl(model)    { return document.getElementById(`${model}-time`); }
-function tokInEl(model)   { return document.getElementById(`${model}-tok-in`); }
-function tokOutEl(model)  { return document.getElementById(`${model}-tok-out`); }
-
-function resetCard(model) {
-  const card = cardEl(model);
-  card.className = 'model-card';
-  card.dataset.model = model;
-
-  const body = bodyEl(model);
-  body.textContent = 'AWAITING PROMPT';
-  body.className = 'card-body placeholder';
-
-  [timeEl(model), tokInEl(model), tokOutEl(model)].forEach(el => {
-    el.textContent = '—';
-    el.className = 'meta-value empty';
-  });
+function setLoading(key) {
+  const c = card(key); if (!c) return;
+  c.className = 'model-card loading';
+  c.style.setProperty('--c', MODELS.find(m => m.key === key).color);
+  const b = body(key);
+  b.className = 'card-body';
+  b.innerHTML = `<div class="thinking-dots">
+    <div class="thinking-dots-row"><span></span><span></span><span></span></div>
+    <div class="thinking-dots-label">Thinking…</div>
+  </div>`;
 }
 
-function setLoading(model) {
-  cardEl(model).classList.add('loading');
-  const body = bodyEl(model);
-  body.className = 'card-body';
-  body.innerHTML = `
-    <div class="thinking-dots">
-      <div class="thinking-dots-row">
-        <span></span><span></span><span></span>
-      </div>
-      <div class="thinking-dots-label">Thinking…</div>
-    </div>`;
+function setDone(key, text, ms, tIn, tOut) {
+  const c = card(key); if (!c) return;
+  c.classList.remove('loading'); c.classList.add('done');
+  body(key).className = 'card-body';
+  body(key).textContent = text;
+  timeEl(key).textContent = ms.toLocaleString() + ' ms'; timeEl(key).className = 'meta-value';
+  tokIn(key).textContent  = tIn.toLocaleString();         tokIn(key).className  = 'meta-value';
+  tokOut(key).textContent = tOut.toLocaleString();        tokOut(key).className = 'meta-value';
 }
 
-function setDone(model, text, ms, tokIn, tokOut) {
-  const card = cardEl(model);
-  card.classList.remove('loading');
-  card.classList.add('done');
-
-  const body = bodyEl(model);
-  body.textContent = text;
-  body.className = 'card-body';
-
-  timeEl(model).textContent  = ms.toLocaleString() + ' ms';
-  timeEl(model).className    = 'meta-value';
-  tokInEl(model).textContent  = tokIn.toLocaleString();
-  tokInEl(model).className    = 'meta-value';
-  tokOutEl(model).textContent = tokOut.toLocaleString();
-  tokOutEl(model).className   = 'meta-value';
+function setError(key, msg) {
+  const c = card(key); if (!c) return;
+  c.classList.remove('loading'); c.classList.add('errored');
+  body(key).className = 'card-body';
+  body(key).textContent = '⚠  ' + msg;
 }
 
-function setError(model, msg) {
-  const card = cardEl(model);
-  card.classList.remove('loading');
-  card.classList.add('errored');
-
-  const body = bodyEl(model);
-  body.textContent = '⚠ ' + msg;
-  body.className = 'card-body';
-}
-
-// ── API call ──
-async function callModel(model, prompt, apiKey) {
-  const t0 = performance.now();
-  const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + apiKey,
-    },
-    body: JSON.stringify({
-      model: MODEL_IDS[model],
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  });
-  const ms = Math.round(performance.now() - t0);
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(err.message || err.error?.message || res.statusText);
-  }
-
-  const data = await res.json();
-  const text   = data.choices?.[0]?.message?.content ?? '(no response)';
-  const tokIn  = data.usage?.prompt_tokens     ?? 0;
-  const tokOut = data.usage?.completion_tokens ?? 0;
-  return { text, ms, tokIn, tokOut };
-}
-
-// ── Fire ──
+// ── Fire ──────────────────────────────────────────────────────────────────────
 async function fire() {
-  const apiKey = keyInput.value.trim();
   const prompt = promptInput.value.trim();
-
-  if (!apiKey) { setStatus('Enter your Mistral API key first.', 'error'); return; }
   if (!prompt) { setStatus('Enter a prompt.', 'error'); return; }
 
-  submitBtn.disabled = true;
-  setStatus('Firing at all three models simultaneously…');
+  const selected = MODELS.filter(m => active.has(m.key));
 
-  MODELS.forEach(resetCard);
-  MODELS.forEach(setLoading);
+  submitBtn.disabled = true;
+  setStatus(`Firing at ${selected.length} models…`);
+  selected.forEach(m => setLoading(m.key));
 
   let done = 0;
-  const total = MODELS.length;
 
-  const promises = MODELS.map(model =>
-    callModel(model, prompt, apiKey)
-      .then(({ text, ms, tokIn, tokOut }) => {
-        setDone(model, text, ms, tokIn, tokOut);
-        done++;
-        setStatus(`${done}/${total} complete…`);
-      })
-      .catch(err => {
-        setError(model, err.message);
-        done++;
-        setStatus(`${done}/${total} complete (some errors).`, 'error');
-      })
+  const promises = selected.map(m =>
+    fetch('/api/proxy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ provider: m.provider, model: m.id, prompt }),
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) throw new Error(data.error);
+      setDone(m.key, data.content, data.response_time_ms, data.tokens_in, data.tokens_out);
+    })
+    .catch(err => setError(m.key, err.message))
+    .finally(() => {
+      done++;
+      setStatus(`${done}/${selected.length} complete${done < selected.length ? '…' : ''}`);
+    })
   );
 
   await Promise.allSettled(promises);
 
-  const allDone  = MODELS.every(m => cardEl(m).classList.contains('done'));
-  const anyError = MODELS.some(m => cardEl(m).classList.contains('errored'));
-
-  if (allDone)       setStatus('All models responded.', 'ok');
-  else if (anyError) setStatus('Finished — one or more models errored.', 'error');
-
+  const anyError = selected.some(m => card(m.key)?.classList.contains('errored'));
+  setStatus(
+    anyError ? 'Finished — some models errored.' : 'All models responded.',
+    anyError ? 'error' : 'ok'
+  );
   submitBtn.disabled = false;
 }
+
+// ── Input bindings ────────────────────────────────────────────────────────────
+promptInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fire(); }
+});
+submitBtn.addEventListener('click', fire);
 </script>
 </body>
 </html>
