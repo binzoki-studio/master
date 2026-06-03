@@ -198,9 +198,35 @@
   .model-card[data-model="medium"] { --accent-c: var(--medium); }
   .model-card[data-model="large"]  { --accent-c: var(--large); }
 
-  .model-card.loading { border-color: rgba(255,230,0,0.15); }
+  .model-card.loading { border-color: color-mix(in srgb, var(--accent-c) 20%, transparent); }
   .model-card.done    { border-color: color-mix(in srgb, var(--accent-c) 25%, transparent); }
   .model-card.errored { border-color: rgba(255,60,0,0.25); }
+
+  /* ── Progress bar ── */
+  .model-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      var(--accent-c) 40%,
+      color-mix(in srgb, var(--accent-c) 60%, white) 50%,
+      var(--accent-c) 60%,
+      transparent 100%);
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .model-card.loading::after {
+    opacity: 1;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
 
   .card-head {
     padding: 20px 24px 16px;
@@ -278,15 +304,36 @@
     text-transform: uppercase; text-align: center;
   }
 
-  /* Typing cursor */
-  .card-body.streaming::after {
-    content: '▋';
-    display: inline-block;
-    animation: blink 0.7s step-end infinite;
-    color: var(--accent);
-    font-size: 0.9em;
+  /* ── Thinking dots ── */
+  .thinking-dots {
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px;
+    height: 100%;
   }
-  @keyframes blink { 50% { opacity: 0; } }
+  .thinking-dots-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-c);
+    opacity: 0.6;
+  }
+  .thinking-dots-row {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .thinking-dots-row span {
+    display: block;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent-c);
+    opacity: 0.2;
+    animation: dot-bounce 1.2s ease-in-out infinite;
+  }
+  .thinking-dots-row span:nth-child(1) { animation-delay: 0s; }
+  .thinking-dots-row span:nth-child(2) { animation-delay: 0.2s; }
+  .thinking-dots-row span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-bounce {
+    0%, 80%, 100% { opacity: 0.15; transform: scale(1); }
+    40%           { opacity: 1;    transform: scale(1.4); }
+  }
 
   /* ── SECTION DIVIDER ── */
   .section-divider {
@@ -492,8 +539,14 @@ function resetCard(model) {
 function setLoading(model) {
   cardEl(model).classList.add('loading');
   const body = bodyEl(model);
-  body.textContent = '';
-  body.className = 'card-body streaming';
+  body.className = 'card-body';
+  body.innerHTML = `
+    <div class="thinking-dots">
+      <div class="thinking-dots-row">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="thinking-dots-label">Thinking…</div>
+    </div>`;
 }
 
 function setDone(model, text, ms, tokIn, tokOut) {
