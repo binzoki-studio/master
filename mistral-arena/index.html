@@ -333,7 +333,7 @@
       </div>
       <div class="field">
         <label class="field-label" for="prompt">Prompt</label>
-        <textarea id="prompt" placeholder="Enter your prompt here…" spellcheck="false"></textarea>
+        <textarea id="prompt" placeholder="Enter your prompt… (Enter to fire, Shift+Enter for newline)" spellcheck="false"></textarea>
       </div>
       <button class="submit-btn" id="submit-btn">FIRE</button>
     </div>
@@ -456,9 +456,9 @@ keyInput.addEventListener('input', () => {
   else   localStorage.removeItem('mistral_arena_key');
 });
 
-// ── Submit on Enter (Ctrl/Cmd+Enter in textarea) ──
+// ── Submit on Enter (Shift+Enter for newline) ──
 promptInput.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') fire();
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fire(); }
 });
 submitBtn.addEventListener('click', fire);
 
