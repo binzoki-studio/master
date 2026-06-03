@@ -13,6 +13,7 @@
     --games:   #ff3c00;
     --popculture: #7c3aed;  
     --design: #00b4a0;
+    --ai:     #f97316;
     --accent: #ffe600;
     --grid: rgba(245,240,232,0.04);
   }
@@ -244,6 +245,10 @@
   #design .section-label { color: var(--design); }
   #design .section-title { color: var(--design); }
 
+  /* ── AI SECTION ── */
+  #ai .section-label { color: var(--ai); }
+  #ai .section-title { color: var(--ai); }
+
   /* ── PROJECT CARDS ── */
   .projects-grid {
     display: grid;
@@ -279,6 +284,7 @@
   #games   .card::before { background: linear-gradient(135deg, rgba(255,60,0,0.08), transparent); }
   #popculture .card::before { background: linear-gradient(135deg, rgba(124,58,237,0.08), transparent); }
   #design  .card::before { background: linear-gradient(135deg, rgba(0,180,160,0.08), transparent); }
+  #ai      .card::before { background: linear-gradient(135deg, rgba(249,115,22,0.08), transparent); }
 
   .card-num {
     font-family: 'Space Mono', monospace;
@@ -300,6 +306,7 @@
   #games   .card:hover .card-title { color: var(--games); }
   #popculture .card:hover .card-title { color: var(--popculture); }
   #design  .card:hover .card-title { color: var(--design); }
+  #ai      .card:hover .card-title { color: var(--ai); }
 
   .card-desc {
     font-size: 13px;
@@ -341,6 +348,7 @@
   #games   .card:hover .card-cta { color: var(--games); }
   #popculture .card:hover .card-cta { color: var(--popculture); }
   #design  .card:hover .card-cta { color: var(--design); }
+  #ai      .card:hover .card-cta { color: var(--ai); }
 
   .card-cta::after {
     content: '→';
@@ -480,6 +488,7 @@
   <ul class="nav-links">
     <li><a href="#games">Games</a></li>
     <li><a href="#popculture">Pop Culture</a></li>
+    <li><a href="#ai">AI</a></li>
     <li><a href="#design">Design</a></li>
   </ul>
 </nav>
@@ -700,6 +709,57 @@
       <div class="card-tags"><span class="tag">Illustration</span><span class="tag">TBD</span></div>
       <div class="card-cta">Coming soon</div>
     </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="marquee-divider">
+  <div class="marquee-track" style="animation-direction:reverse;animation-duration:20s;">
+    <span>LANGUAGE MODELS</span><span class="accent">✦</span>
+    <span>INFERENCE</span><span class="accent">✦</span>
+    <span>TOKENS</span><span class="accent">✦</span>
+    <span>MISTRAL</span><span class="accent">✦</span>
+    <span>PROMPTING</span><span class="accent">✦</span>
+    <span>LANGUAGE MODELS</span><span class="accent">✦</span>
+    <span>INFERENCE</span><span class="accent">✦</span>
+    <span>TOKENS</span><span class="accent">✦</span>
+    <span>MISTRAL</span><span class="accent">✦</span>
+    <span>PROMPTING</span><span class="accent">✦</span>
+    <span>LANGUAGE MODELS</span><span class="accent">✦</span>
+    <span>INFERENCE</span><span class="accent">✦</span>
+    <span>TOKENS</span><span class="accent">✦</span>
+    <span>MISTRAL</span><span class="accent">✦</span>
+    <span>PROMPTING</span><span class="accent">✦</span>
+  </div>
+</div>
+
+<!-- AI -->
+<section id="ai">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">04 — Category</div>
+      <div class="section-title">AI</div>
+    </div>
+    <div class="section-count">1 project</div>
+  </div>
+
+  <div class="projects-grid">
+    <a href="https://binzoki-studio.github.io/mistral-arena/" class="card featured reveal">
+      <div>
+        <div class="card-badge" style="background:var(--ai);">Live</div>
+        <div class="card-title">MISTRAL COMPARE</div>
+        <div class="card-desc">Run the same prompt through three Mistral models simultaneously. Compare responses, latency, and token usage side by side.</div>
+        <div class="card-tags">
+          <span class="tag">Mistral API</span>
+          <span class="tag">LLM</span>
+          <span class="tag">Vanilla JS</span>
+        </div>
+        <div class="card-cta">Open tool</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;">
+        <div style="font-size:clamp(80px,10vw,140px);line-height:1;text-align:center;filter:drop-shadow(0 0 40px rgba(249,115,22,0.35));">🤖</div>
+      </div>
+    </a>
   </div>
 </section>
 
