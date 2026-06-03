@@ -310,6 +310,76 @@
     gap: 2px;
   }
 
+  /* ── GAMES COVER GRID ── */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .card.game-card {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .game-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .card.game-card:hover .game-cover img {
+    transform: scale(1.04);
+  }
+
+  .game-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    background: linear-gradient(135deg, rgba(255,60,0,0.12), rgba(255,60,0,0.04));
+  }
+
+  .game-info {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0;
+  }
+
+  .card.game-card .card-badge {
+    margin-bottom: 12px;
+    display: inline-block;
+    align-self: flex-start;
+  }
+
+  .card.game-card .card-title {
+    font-size: clamp(28px, 3vw, 40px);
+    margin-bottom: 14px;
+  }
+
+  .card.game-card .card-tags {
+    margin-bottom: 20px;
+  }
+
+  .card.game-card .card-cta {
+    margin-top: auto;
+  }
+
   .card {
     position: relative;
     background: var(--card-bg);
@@ -605,70 +675,65 @@
       <div class="section-label">01 — Category</div>
       <div class="section-title">Games</div>
     </div>
-    <div class="section-count">3 projects</div>
+    <div class="section-count">3 games</div>
   </div>
 
-  <div class="projects-grid">
-    <a href="snake-game/snake.html" class="card featured reveal">
-      <div>
+  <div class="games-grid">
+
+    <a href="snake-game/snake.html" class="card game-card reveal">
+      <div class="game-cover">
+        <img src="./assets/snake_cover.png" alt="Snake Game cover"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="game-cover-placeholder" style="display:none">🐍</div>
+      </div>
+      <div class="game-info">
         <div class="card-badge">Live</div>
         <div class="card-title">Snake Game</div>
-        <div class="card-desc">A fully-featured Snake remake with multiple themes, speed settings, power-ups, and particle effects. Built from scratch in vanilla JS with a retro arcade aesthetic.</div>
         <div class="card-tags">
           <span class="tag">Vanilla JS</span>
           <span class="tag">Canvas API</span>
-          <span class="tag">Game Dev</span>
           <span class="tag">Retro</span>
         </div>
         <div class="card-cta">Play now</div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:center;">
-        <div style="font-size:clamp(80px,10vw,140px);line-height:1;text-align:center;filter:drop-shadow(0 0 40px rgba(255,60,0,0.3));">🐍</div>
-      </div>
     </a>
 
-    <a href="asteroids-game/asteroids.html" class="card featured reveal">
-      <div>
+    <a href="asteroids-game/asteroids.html" class="card game-card reveal">
+      <div class="game-cover">
+        <img src="./assets/asteroids_cover.png" alt="VOIDRIFT cover"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="game-cover-placeholder" style="display:none">🌌</div>
+      </div>
+      <div class="game-info">
         <div class="card-badge">Live</div>
         <div class="card-title">VOIDRIFT</div>
-        <div class="card-desc">A deep-space asteroid survival game. Dodge, thrust and blast through endless waves. Features cannon heat management, asteroid splitting, sector progression and screen shake.</div>
         <div class="card-tags">
           <span class="tag">Vanilla JS</span>
           <span class="tag">Canvas API</span>
-          <span class="tag">Game Dev</span>
           <span class="tag">Space</span>
         </div>
         <div class="card-cta">Play now</div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:center;">
-        <div style="font-size:clamp(80px,10vw,140px);line-height:1;text-align:center;filter:drop-shadow(0 0 40px rgba(255,60,0,0.3));">🌌</div>
-      </div>
     </a>
 
-    <a href="flappy-game/flappy.html" class="card featured reveal">
-      <div>
+    <a href="flappy-game/flappy.html" class="card game-card reveal">
+      <div class="game-cover">
+        <img src="./assets/flappy_cover.png" alt="FLAPVOID cover"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="game-cover-placeholder" style="display:none">🐦</div>
+      </div>
+      <div class="game-info">
         <div class="card-badge">Live</div>
         <div class="card-title">FLAPVOID</div>
-        <div class="card-desc">A deep-space Flappy Bird remake. Navigate through neon gates, survive endless waves and beat your high score. Features screen shake, particle effects and persistent best score.</div>
         <div class="card-tags">
           <span class="tag">Vanilla JS</span>
           <span class="tag">Canvas API</span>
-          <span class="tag">Game Dev</span>
           <span class="tag">Arcade</span>
         </div>
         <div class="card-cta">Play now</div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:center;">
-        <div style="font-size:clamp(80px,10vw,140px);line-height:1;text-align:center;filter:drop-shadow(0 0 40px rgba(255,60,0,0.3));">🐦</div>
-      </div>
     </a>
 
-    <div class="card placeholder reveal">
-      <div class="card-num">003</div>
-      <div class="card-title">Coming Soon</div>
-      <div class="card-desc">Another one brewing.</div>
-      <div class="card-tags"><span class="tag">TBD</span></div>
-    </div>
   </div>
 </section>
 
