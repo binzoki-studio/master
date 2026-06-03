@@ -265,6 +265,47 @@
   .model-card.errored .card-status-dot { background: #ff3c00; }
   @keyframes pulse-dot { from { opacity: 1; } to { opacity: 0.25; } }
 
+  /* ── Winner badges ── */
+  .winner-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 4px; font-weight: 700;
+    white-space: nowrap;
+    transform: scale(0.6) translateY(-6px);
+    opacity: 0;
+    animation: badge-drop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  @keyframes badge-drop {
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .badge-fastest {
+    background: rgba(255,230,0,0.15);
+    color: #ffe600;
+    border: 1px solid rgba(255,230,0,0.35);
+  }
+  .badge-efficient {
+    background: rgba(0,180,100,0.15);
+    color: #00c875;
+    border: 1px solid rgba(0,200,117,0.35);
+  }
+  .badge-detailed {
+    background: rgba(124,58,237,0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(124,58,237,0.35);
+  }
+  /* Glowing border overrides */
+  .model-card.winner-fastest  { box-shadow: 0 0 0 1px rgba(255,230,0,0.5),  0 0 24px rgba(255,230,0,0.08); }
+  .model-card.winner-efficient{ box-shadow: 0 0 0 1px rgba(0,200,117,0.5),  0 0 24px rgba(0,200,117,0.08); }
+  .model-card.winner-detailed { box-shadow: 0 0 0 1px rgba(124,58,237,0.5), 0 0 24px rgba(124,58,237,0.08); }
+  /* A card can win multiple — stack shadows */
+  .model-card.winner-fastest.winner-detailed {
+    box-shadow:
+      0 0 0 1px rgba(255,230,0,0.4),
+      0 0 0 1px rgba(124,58,237,0.4),
+      0 0 24px rgba(255,230,0,0.07),
+      0 0 24px rgba(124,58,237,0.07);
+  }
+
   /* ── META ROW ── */
   .card-meta {
     display: flex; gap: 16px;
@@ -506,6 +547,7 @@ function setDone(key, text, ms, tIn, tOut) {
   timeEl(key).textContent = ms.toLocaleString() + ' ms'; timeEl(key).className = 'meta-value';
   tokIn(key).textContent  = tIn.toLocaleString();         tokIn(key).className  = 'meta-value';
   tokOut(key).textContent = tOut.toLocaleString();        tokOut(key).className = 'meta-value';
+  results[key] = { ms, tokOut: tOut }; // store for winner calc
 }
 
 function setError(key, msg) {
@@ -513,6 +555,54 @@ function setError(key, msg) {
   c.classList.remove('loading'); c.classList.add('errored');
   body(key).className = 'card-body';
   body(key).textContent = '⚠  ' + msg;
+}
+
+// ── Results store ─────────────────────────────────────────────────────────────
+const results = {}; // key → { ms, tokOut }
+
+// ── Award winners ─────────────────────────────────────────────────────────────
+function awardWinners() {
+  const eligible = Object.entries(results); // only keys that succeeded
+  if (eligible.length === 0) return;
+
+  // Fastest — lowest ms
+  const fastest = eligible.reduce((a, b) => a[1].ms < b[1].ms ? a : b)[0];
+  // Most efficient — lowest tokOut
+  const efficient = eligible.reduce((a, b) => a[1].tokOut < b[1].tokOut ? a : b)[0];
+  // Most detailed — highest tokOut
+  const detailed = eligible.reduce((a, b) => a[1].tokOut > b[1].tokOut ? a : b)[0];
+
+  const awards = [
+    { key: fastest,   cls: 'winner-fastest',   badgeCls: 'badge-fastest',   label: '⚡ FASTEST'   },
+    { key: efficient, cls: 'winner-efficient',  badgeCls: 'badge-efficient', label: '◆ EFFICIENT'  },
+    { key: detailed,  cls: 'winner-detailed',   badgeCls: 'badge-detailed',  label: '★ DETAILED'   },
+  ];
+
+  // Group badges per card so we can replace the dot with potentially multiple badges
+  const perCard = {};
+  for (const a of awards) {
+    if (!perCard[a.key]) perCard[a.key] = [];
+    perCard[a.key].push(a);
+  }
+
+  for (const [key, wins] of Object.entries(perCard)) {
+    const c = card(key); if (!c) continue;
+    wins.forEach(w => c.classList.add(w.cls));
+
+    // Replace the status dot with badge(s)
+    const dot = c.querySelector('.card-status-dot');
+    if (!dot) continue;
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;gap:4px;';
+    wins.forEach((w, i) => {
+      const badge = document.createElement('span');
+      badge.className = `winner-badge ${w.badgeCls}`;
+      badge.style.animationDelay = `${i * 80}ms`;
+      badge.textContent = w.label;
+      wrapper.appendChild(badge);
+    });
+    dot.replaceWith(wrapper);
+  }
 }
 
 // ── Fire ──────────────────────────────────────────────────────────────────────
@@ -524,6 +614,8 @@ async function fire() {
 
   submitBtn.disabled = true;
   setStatus(`Firing at ${selected.length} models…`);
+  // Clear previous results + winner classes
+  for (const key of Object.keys(results)) delete results[key];
   selected.forEach(m => setLoading(m.key));
 
   let done = 0;
@@ -547,6 +639,8 @@ async function fire() {
   );
 
   await Promise.allSettled(promises);
+
+  awardWinners();
 
   const anyError = selected.some(m => card(m.key)?.classList.contains('errored'));
   setStatus(
