@@ -381,14 +381,235 @@
     text-transform: uppercase; color: var(--dim); white-space: nowrap;
   }
   .section-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── GEAR BUTTON ── */
+  .gear-btn {
+    background: none; border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 10px;
+    color: var(--dim); cursor: pointer; font-size: 16px; line-height: 1;
+    transition: border-color 0.2s, color 0.2s, transform 0.4s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .gear-btn:hover { border-color: rgba(245,240,232,0.2); color: var(--white); }
+  .gear-btn:hover .gear-icon { transform: rotate(60deg); }
+  .gear-icon { display: inline-block; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+  .gear-btn .key-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.1em;
+    color: var(--accent); background: rgba(255,230,0,0.1);
+    border-radius: 4px; padding: 2px 6px;
+  }
+  .gear-btn .key-count.none { color: #ff3c00; background: rgba(255,60,0,0.1); }
+
+  /* ── DRAWER OVERLAY ── */
+  .drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(3px);
+    z-index: 200;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+  /* ── SETTINGS DRAWER ── */
+  .settings-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: min(440px, 100vw);
+    background: #0f0f1a;
+    border-left: 1px solid var(--border);
+    z-index: 201;
+    display: flex; flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    overflow: hidden;
+  }
+  .settings-drawer.open { transform: translateX(0); }
+
+  .drawer-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 28px 18px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .drawer-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; letter-spacing: 0.06em;
+  }
+  .drawer-close {
+    background: none; border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 10px;
+    color: var(--dim); cursor: pointer; font-size: 18px; line-height: 1;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .drawer-close:hover { border-color: rgba(245,240,232,0.2); color: var(--white); }
+
+  .drawer-body { flex: 1; overflow-y: auto; padding: 28px; }
+  .drawer-body::-webkit-scrollbar { width: 3px; }
+  .drawer-body::-webkit-scrollbar-thumb { background: rgba(245,240,232,0.08); border-radius: 2px; }
+
+  /* First-load notice */
+  .drawer-notice {
+    background: rgba(255,230,0,0.06);
+    border: 1px solid rgba(255,230,0,0.18);
+    border-radius: 8px; padding: 14px 16px;
+    margin-bottom: 28px;
+    font-size: 13px; line-height: 1.6; color: rgba(245,240,232,0.6);
+    display: none;
+  }
+  .drawer-notice.visible { display: block; }
+  .drawer-notice strong { color: var(--accent); font-weight: 500; }
+
+  /* Provider key group */
+  .key-group {
+    margin-bottom: 24px;
+  }
+  .key-group-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .key-provider-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--provider-color); flex-shrink: 0;
+    box-shadow: 0 0 6px var(--provider-color);
+  }
+  .key-provider-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--dim);
+  }
+  .key-provider-name a {
+    color: var(--provider-color); text-decoration: none; opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+  .key-provider-name a:hover { opacity: 1; }
+  .key-input-row { display: flex; gap: 8px; }
+  .key-input-row input {
+    flex: 1; background: rgba(245,240,232,0.04);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 11px 14px; color: var(--white);
+    font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.05em;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .key-input-row input:focus {
+    border-color: color-mix(in srgb, var(--provider-color) 50%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--provider-color) 8%, transparent);
+  }
+  .key-input-row input.saved {
+    border-color: color-mix(in srgb, var(--provider-color) 35%, transparent);
+  }
+  .key-toggle-vis {
+    background: none; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px;
+    color: var(--dim); cursor: pointer; font-size: 13px; line-height: 1;
+    transition: border-color 0.2s; flex-shrink: 0;
+  }
+  .key-toggle-vis:hover { border-color: rgba(245,240,232,0.2); }
+
+  .drawer-footer {
+    padding: 18px 28px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: center; flex-shrink: 0;
+  }
+  .save-btn {
+    flex: 1; background: var(--accent); color: #0a0a0a;
+    border: none; border-radius: 8px; padding: 12px 20px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.1em;
+    cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+  }
+  .save-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .clear-btn {
+    background: none; border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px;
+    font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--dim); cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .clear-btn:hover { border-color: rgba(255,60,0,0.4); color: #ff3c00; }
+  .save-feedback {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #00c875; opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .save-feedback.show { opacity: 1; }
 </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-logo">BINZOKI<span>.</span>STUDIO</div>
-  <div class="nav-tag">Model Arena · 6 Providers</div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="nav-tag">Model Arena · 6 Providers</div>
+    <button class="gear-btn" id="gear-btn" title="API Keys">
+      <span class="gear-icon">⚙</span>
+      <span class="key-count none" id="key-count">0/4 keys</span>
+    </button>
+  </div>
 </nav>
+
+<!-- Settings drawer -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<aside class="settings-drawer" id="settings-drawer">
+  <div class="drawer-head">
+    <span class="drawer-title">API KEYS</span>
+    <button class="drawer-close" id="drawer-close">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-notice" id="drawer-notice">
+      <strong>Welcome to Model Arena.</strong><br>
+      To use this tool you need your own API keys — they're stored only in your browser and sent directly to each provider's API. No keys are stored on any server.
+    </div>
+
+    <div class="key-group" style="--provider-color:#ff3c00;">
+      <div class="key-group-head">
+        <div class="key-provider-dot"></div>
+        <span class="key-provider-name">Mistral &mdash; <a href="https://console.mistral.ai/api-keys" target="_blank">console.mistral.ai ↗</a></span>
+      </div>
+      <div class="key-input-row">
+        <input type="password" id="key-mistral" placeholder="Paste your Mistral API key…" autocomplete="off" spellcheck="false">
+        <button class="key-toggle-vis" data-target="key-mistral">👁</button>
+      </div>
+    </div>
+
+    <div class="key-group" style="--provider-color:#10a37f;">
+      <div class="key-group-head">
+        <div class="key-provider-dot"></div>
+        <span class="key-provider-name">OpenAI &mdash; <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com ↗</a></span>
+      </div>
+      <div class="key-input-row">
+        <input type="password" id="key-openai" placeholder="Paste your OpenAI API key…" autocomplete="off" spellcheck="false">
+        <button class="key-toggle-vis" data-target="key-openai">👁</button>
+      </div>
+    </div>
+
+    <div class="key-group" style="--provider-color:#d97706;">
+      <div class="key-group-head">
+        <div class="key-provider-dot"></div>
+        <span class="key-provider-name">Anthropic &mdash; <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com ↗</a></span>
+      </div>
+      <div class="key-input-row">
+        <input type="password" id="key-anthropic" placeholder="Paste your Anthropic API key…" autocomplete="off" spellcheck="false">
+        <button class="key-toggle-vis" data-target="key-anthropic">👁</button>
+      </div>
+    </div>
+
+    <div class="key-group" style="--provider-color:#4285f4;">
+      <div class="key-group-head">
+        <div class="key-provider-dot"></div>
+        <span class="key-provider-name">Google &mdash; <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com ↗</a></span>
+      </div>
+      <div class="key-input-row">
+        <input type="password" id="key-google" placeholder="Paste your Google API key…" autocomplete="off" spellcheck="false">
+        <button class="key-toggle-vis" data-target="key-google">👁</button>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="save-btn" id="save-keys-btn">SAVE KEYS</button>
+    <button class="clear-btn" id="clear-keys-btn">Clear all</button>
+    <span class="save-feedback" id="save-feedback">Saved ✓</span>
+  </div>
+</aside>
 
 <main>
   <div class="page-header">
@@ -423,6 +644,103 @@
 </main>
 
 <script>
+// ── API Key management ────────────────────────────────────────────────────────
+const PROVIDERS = ['mistral', 'openai', 'anthropic', 'google'];
+const LS_KEY = 'model_arena_keys';
+
+function loadKeys() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch { return {}; }
+}
+function saveKeys(keys) {
+  localStorage.setItem(LS_KEY, JSON.stringify(keys));
+}
+function getKeys() { return loadKeys(); }
+
+function countKeys() {
+  const k = loadKeys();
+  return PROVIDERS.filter(p => k[p]?.trim()).length;
+}
+
+function updateKeyCount() {
+  const n = countKeys();
+  const el = document.getElementById('key-count');
+  el.textContent = `${n}/4 keys`;
+  el.className = 'key-count' + (n === 0 ? ' none' : '');
+}
+
+// ── Drawer logic ──────────────────────────────────────────────────────────────
+function openDrawer(firstLoad = false) {
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('settings-drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (firstLoad) document.getElementById('drawer-notice').classList.add('visible');
+  // Populate inputs from localStorage
+  const keys = loadKeys();
+  PROVIDERS.forEach(p => {
+    const inp = document.getElementById(`key-${p}`);
+    if (inp) { inp.value = keys[p] || ''; inp.classList.toggle('saved', !!keys[p]); }
+  });
+}
+function closeDrawer() {
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('settings-drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('gear-btn').addEventListener('click', () => openDrawer());
+document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+document.getElementById('drawer-overlay').addEventListener('click', closeDrawer);
+
+// Visibility toggles
+document.querySelectorAll('.key-toggle-vis').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const inp = document.getElementById(btn.dataset.target);
+    const isHidden = inp.type === 'password';
+    inp.type = isHidden ? 'text' : 'password';
+    btn.textContent = isHidden ? '🙈' : '👁';
+  });
+});
+
+// Save
+document.getElementById('save-keys-btn').addEventListener('click', () => {
+  const keys = {};
+  PROVIDERS.forEach(p => {
+    const v = document.getElementById(`key-${p}`)?.value.trim();
+    if (v) keys[p] = v;
+  });
+  saveKeys(keys);
+  updateKeyCount();
+  PROVIDERS.forEach(p => {
+    const inp = document.getElementById(`key-${p}`);
+    if (inp) inp.classList.toggle('saved', !!keys[p]);
+  });
+  const fb = document.getElementById('save-feedback');
+  fb.classList.add('show');
+  setTimeout(() => fb.classList.remove('show'), 2000);
+});
+
+// Clear
+document.getElementById('clear-keys-btn').addEventListener('click', () => {
+  localStorage.removeItem(LS_KEY);
+  PROVIDERS.forEach(p => {
+    const inp = document.getElementById(`key-${p}`);
+    if (inp) { inp.value = ''; inp.classList.remove('saved'); }
+  });
+  updateKeyCount();
+});
+
+// Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDrawer();
+});
+
+// Init key count + auto-open if no keys
+updateKeyCount();
+if (countKeys() === 0) {
+  // slight delay so the page renders first
+  setTimeout(() => openDrawer(true), 300);
+}
+
 // ── Model definitions ─────────────────────────────────────────────────────────
 const MODELS = [
   { key: 'mistral-small',  provider: 'mistral',   id: 'mistral-small-latest',  label: 'Mistral Small',  badge: 'Mistral',   color: '#ff3c00' },
@@ -620,11 +938,13 @@ async function fire() {
 
   let done = 0;
 
+  const apiKeys = getKeys();
+
   const promises = selected.map(m =>
     fetch('/api/proxy', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ provider: m.provider, model: m.id, prompt }),
+      body: JSON.stringify({ provider: m.provider, model: m.id, prompt, apiKeys }),
     })
     .then(r => r.json())
     .then(data => {
