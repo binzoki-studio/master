@@ -370,6 +370,50 @@
   .card-body::-webkit-scrollbar-track { background: transparent; }
   .card-body::-webkit-scrollbar-thumb { background: rgba(245,240,232,0.08); border-radius: 2px; }
 
+  /* ── PILL PROVIDER GROUP ── */
+  .pill-group { display: flex; flex-direction: column; gap: 8px; }
+  .pill-group-head {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pill-group-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--group-color); opacity: 0.7; white-space: nowrap;
+  }
+  .pill-group-line { flex: 1; height: 1px; background: color-mix(in srgb, var(--group-color) 18%, transparent); }
+  .pill-group-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill-groups-wrap {
+    display: flex; flex-direction: column; gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* ── ARENA PROVIDER GROUP ── */
+  .arena { display: flex; flex-direction: column; gap: 28px; }
+  .provider-group { display: flex; flex-direction: column; gap: 2px; }
+  .provider-group-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 8px;
+  }
+  .provider-group-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--group-color);
+    box-shadow: 0 0 8px var(--group-color);
+    flex-shrink: 0;
+  }
+  .provider-group-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--group-color);
+  }
+  .provider-group-line { flex: 1; height: 1px; background: color-mix(in srgb, var(--group-color) 15%, transparent); }
+  .provider-group-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  @media (max-width: 1100px) { .provider-group-cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 680px)  { .provider-group-cards { grid-template-columns: 1fr; } }
+
   /* ── SECTION DIVIDER ── */
   .section-divider {
     display: flex; align-items: center; gap: 18px;
@@ -539,7 +583,7 @@
 <nav>
   <div class="nav-logo">BINZOKI<span>.</span>STUDIO</div>
   <div style="display:flex;align-items:center;gap:16px;">
-    <div class="nav-tag">Model Arena · 6 Providers</div>
+    <div class="nav-tag">Model Arena · 9 Models · 4 Providers</div>
     <button class="gear-btn" id="gear-btn" title="API Keys">
       <span class="gear-icon">⚙</span>
       <span class="key-count none" id="key-count">0/4 keys</span>
@@ -615,14 +659,14 @@
   <div class="page-header">
     <div class="page-label">// Tool — 001</div>
     <h1 class="page-title">MODEL<br><em>ARENA</em></h1>
-    <p class="page-desc">Fire one prompt at six models across four providers simultaneously. Compare speed, quality and token cost side by side.</p>
+    <p class="page-desc">Fire one prompt at up to nine models across four providers simultaneously. Compare speed, quality and token cost side by side.</p>
   </div>
 
   <!-- Config -->
   <div class="config-panel">
     <!-- Model selector -->
     <div class="selector-label">Select Models</div>
-    <div class="model-pills" id="pill-row"></div>
+    <div class="pill-groups-wrap" id="pill-row"></div>
 
     <!-- Prompt + fire -->
     <div class="config-row">
@@ -741,34 +785,81 @@ if (countKeys() === 0) {
   setTimeout(() => openDrawer(true), 300);
 }
 
-// ── Model definitions ─────────────────────────────────────────────────────────
+// ── Provider & model definitions ──────────────────────────────────────────────
+const PROVIDER_META = {
+  mistral:   { label: 'Mistral',   color: '#ff7040' },
+  openai:    { label: 'OpenAI',    color: '#10a37f' },
+  anthropic: { label: 'Anthropic', color: '#d97706' },
+  google:    { label: 'Google',    color: '#4285f4' },
+};
+
 const MODELS = [
-  { key: 'mistral-small',  provider: 'mistral',   id: 'mistral-small-latest',  label: 'Mistral Small',  badge: 'Mistral',   color: '#ff3c00' },
-  { key: 'mistral-medium', provider: 'mistral',   id: 'mistral-medium-latest', label: 'Mistral Medium', badge: 'Mistral',   color: '#7c3aed' },
-  { key: 'mistral-large',  provider: 'mistral',   id: 'mistral-large-latest',  label: 'Mistral Large',  badge: 'Mistral',   color: '#00b4a0' },
-  { key: 'gpt-4o-mini',    provider: 'openai',    id: 'gpt-4o-mini',           label: 'GPT-4o Mini',    badge: 'OpenAI',    color: '#10a37f' },
-  { key: 'claude-haiku',   provider: 'anthropic', id: 'claude-haiku-4-5',      label: 'Claude Haiku',   badge: 'Anthropic', color: '#d97706' },
-  { key: 'gemini-flash',   provider: 'google',    id: 'gemini-2.0-flash',      label: 'Gemini Flash',   badge: 'Google',    color: '#4285f4' },
+  // Mistral
+  { key: 'mistral-small',  provider: 'mistral',   id: 'mistral-small-latest',  label: 'Small',   sublabel: 'Mistral Small',  color: '#ff3c00' },
+  { key: 'mistral-medium', provider: 'mistral',   id: 'mistral-medium-latest', label: 'Medium',  sublabel: 'Mistral Medium', color: '#7c3aed' },
+  { key: 'mistral-large',  provider: 'mistral',   id: 'mistral-large-latest',  label: 'Large',   sublabel: 'Mistral Large',  color: '#00b4a0' },
+  // OpenAI
+  { key: 'gpt-4o-mini',    provider: 'openai',    id: 'gpt-4o-mini',           label: '4o Mini', sublabel: 'GPT-4o Mini',    color: '#10a37f' },
+  { key: 'gpt-4o',         provider: 'openai',    id: 'gpt-4o',                label: '4o',      sublabel: 'GPT-4o',         color: '#05c489' },
+  // Anthropic
+  { key: 'claude-haiku',   provider: 'anthropic', id: 'claude-haiku-4-5',      label: 'Haiku',   sublabel: 'Claude Haiku',   color: '#d97706' },
+  { key: 'claude-sonnet',  provider: 'anthropic', id: 'claude-sonnet-4-5',     label: 'Sonnet',  sublabel: 'Claude Sonnet',  color: '#f59e0b' },
+  // Google
+  { key: 'gemini-flash',   provider: 'google',    id: 'gemini-2.0-flash',      label: 'Flash',   sublabel: 'Gemini Flash',   color: '#4285f4' },
+  { key: 'gemini-pro',     provider: 'google',    id: 'gemini-1.5-pro',        label: 'Pro',     sublabel: 'Gemini Pro',     color: '#7b9ff9' },
 ];
 
 // All active by default
 const active = new Set(MODELS.map(m => m.key));
 
-// ── Build pill row ────────────────────────────────────────────────────────────
+// ── Group models by provider ──────────────────────────────────────────────────
+function groupByProvider(models) {
+  const groups = {};
+  for (const m of models) {
+    if (!groups[m.provider]) groups[m.provider] = [];
+    groups[m.provider].push(m);
+  }
+  // Return in canonical order
+  return Object.entries(PROVIDER_META)
+    .map(([p, meta]) => ({ provider: p, meta, models: groups[p] || [] }))
+    .filter(g => g.models.length > 0);
+}
+
+// ── Build pill row (grouped) ──────────────────────────────────────────────────
 const pillRow = document.getElementById('pill-row');
-for (const m of MODELS) {
-  const pill = document.createElement('button');
-  pill.className = 'pill active';
-  pill.dataset.key = m.key;
-  pill.style.setProperty('--pill-color', m.color);
-  pill.innerHTML = `<span class="dot"></span>${m.label}`;
-  pill.addEventListener('click', () => togglePill(m.key, pill));
-  pillRow.appendChild(pill);
+
+function buildPills() {
+  pillRow.innerHTML = '';
+  const groups = groupByProvider(MODELS);
+  for (const g of groups) {
+    const wrap = document.createElement('div');
+    wrap.className = 'pill-group';
+    wrap.style.setProperty('--group-color', g.meta.color);
+
+    const head = document.createElement('div');
+    head.className = 'pill-group-head';
+    head.innerHTML = `<span class="pill-group-label">${g.meta.label}</span><div class="pill-group-line"></div>`;
+    wrap.appendChild(head);
+
+    const pillsRow = document.createElement('div');
+    pillsRow.className = 'pill-group-pills';
+    for (const m of g.models) {
+      const pill = document.createElement('button');
+      pill.className = 'pill active';
+      pill.dataset.key = m.key;
+      pill.style.setProperty('--pill-color', m.color);
+      pill.innerHTML = `<span class="dot"></span>${m.label}`;
+      pill.addEventListener('click', () => togglePill(m.key, pill));
+      pillsRow.appendChild(pill);
+    }
+    wrap.appendChild(pillsRow);
+    pillRow.appendChild(wrap);
+  }
 }
 
 function togglePill(key, pill) {
   if (active.has(key)) {
-    if (active.size === 1) return; // keep at least one
+    if (active.size === 1) return;
     active.delete(key);
     pill.classList.remove('active');
   } else {
@@ -778,53 +869,77 @@ function togglePill(key, pill) {
   renderCards();
 }
 
-// ── Build arena cards ─────────────────────────────────────────────────────────
+buildPills();
+
+// ── Build arena cards (grouped by provider) ───────────────────────────────────
 const arena = document.getElementById('arena');
+
+function makeCard(m) {
+  const card = document.createElement('div');
+  card.className = 'model-card';
+  card.id = `card-${m.key}`;
+  card.style.setProperty('--c', m.color);
+  card.innerHTML = `
+    <div class="card-head">
+      <div class="card-head-left">
+        <span class="model-badge">${PROVIDER_META[m.provider].label}</span>
+        <span class="model-name">${m.sublabel}</span>
+      </div>
+      <div class="card-status-dot"></div>
+    </div>
+    <div class="card-meta">
+      <div class="meta-item">
+        <span class="meta-label">Time</span>
+        <span class="meta-value empty" id="${m.key}-time">—</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Tokens in</span>
+        <span class="meta-value empty" id="${m.key}-tok-in">—</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Tokens out</span>
+        <span class="meta-value empty" id="${m.key}-tok-out">—</span>
+      </div>
+    </div>
+    <div class="card-body placeholder" id="${m.key}-body">AWAITING PROMPT</div>`;
+  return card;
+}
 
 function renderCards() {
   arena.innerHTML = '';
-  const selected = MODELS.filter(m => active.has(m.key));
-  for (const m of selected) {
-    const card = document.createElement('div');
-    card.className = 'model-card';
-    card.id = `card-${m.key}`;
-    card.style.setProperty('--c', m.color);
-    card.innerHTML = `
-      <div class="card-head">
-        <div class="card-head-left">
-          <span class="model-badge">${m.badge}</span>
-          <span class="model-name">${m.label}</span>
-        </div>
-        <div class="card-status-dot"></div>
-      </div>
-      <div class="card-meta">
-        <div class="meta-item">
-          <span class="meta-label">Time</span>
-          <span class="meta-value empty" id="${m.key}-time">—</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Tokens in</span>
-          <span class="meta-value empty" id="${m.key}-tok-in">—</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Tokens out</span>
-          <span class="meta-value empty" id="${m.key}-tok-out">—</span>
-        </div>
-      </div>
-      <div class="card-body placeholder" id="${m.key}-body">AWAITING PROMPT</div>`;
-    arena.appendChild(card);
-  }
+  const selectedModels = MODELS.filter(m => active.has(m.key));
+  const groups = groupByProvider(selectedModels);
 
-  // Fix border-radius for first/last in current layout
-  const cards = arena.querySelectorAll('.model-card');
-  cards.forEach((c, i) => {
-    c.style.borderRadius = '';
-  });
-  if (cards.length === 1) {
-    cards[0].style.borderRadius = '12px';
-  } else {
-    cards[0].style.borderRadius = '12px 0 0 12px';
-    cards[cards.length - 1].style.borderRadius = '0 12px 12px 0';
+  for (const g of groups) {
+    const section = document.createElement('div');
+    section.className = 'provider-group';
+    section.style.setProperty('--group-color', g.meta.color);
+
+    // Provider header
+    const head = document.createElement('div');
+    head.className = 'provider-group-head';
+    head.innerHTML = `
+      <div class="provider-group-dot"></div>
+      <span class="provider-group-label">${g.meta.label}</span>
+      <div class="provider-group-line"></div>`;
+    section.appendChild(head);
+
+    // Cards grid
+    const grid = document.createElement('div');
+    grid.className = 'provider-group-cards';
+    for (const m of g.models) grid.appendChild(makeCard(m));
+
+    // Border-radius on first/last card in the group
+    const cards = grid.querySelectorAll('.model-card');
+    if (cards.length === 1) {
+      cards[0].style.borderRadius = '10px';
+    } else {
+      cards[0].style.borderRadius = '10px 0 0 10px';
+      cards[cards.length - 1].style.borderRadius = '0 10px 10px 0';
+    }
+
+    section.appendChild(grid);
+    arena.appendChild(section);
   }
 }
 
