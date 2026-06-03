@@ -172,7 +172,7 @@
 
   .hero-desc {
     max-width: 480px;
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.7;
     color: var(--text-mid);
     margin-bottom: 48px;
@@ -307,14 +307,14 @@
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2px;
+    gap: 16px;
   }
 
   /* ── GAMES COVER GRID ── */
   .games-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
+    gap: 16px;
   }
 
   .card.game-card {
@@ -354,7 +354,7 @@
   }
 
   .game-info {
-    padding: 24px 28px 28px;
+    padding: 28px 32px 32px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -362,18 +362,18 @@
   }
 
   .card.game-card .card-badge {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     display: inline-block;
     align-self: flex-start;
   }
 
   .card.game-card .card-title {
-    font-size: clamp(28px, 3vw, 40px);
-    margin-bottom: 14px;
+    font-size: clamp(30px, 3vw, 44px);
+    margin-bottom: 16px;
   }
 
   .card.game-card .card-tags {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .card.game-card .card-cta {
@@ -384,7 +384,7 @@
     position: relative;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    padding: 36px;
+    padding: 44px;
     overflow: hidden;
     transition: background 0.3s, border-color 0.3s;
     text-decoration: none;
@@ -433,10 +433,10 @@
   #ai      .card:hover .card-title { color: var(--ai); }
 
   .card-desc {
-    font-size: 13px;
-    line-height: 1.65;
-    color: var(--text-dim);
-    margin-bottom: 32px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-mid);
+    margin-bottom: 36px;
   }
 
   .card-tags {
@@ -448,10 +448,10 @@
 
   .tag {
     font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.15em;
+    font-size: 10px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border: 1px solid var(--tag-border);
     color: var(--tag-text);
   }
@@ -461,7 +461,7 @@
     align-items: center;
     gap: 10px;
     font-family: 'Space Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--cta-text);
@@ -682,7 +682,7 @@
 
     <a href="snake-game/snake.html" class="card game-card reveal">
       <div class="game-cover">
-        <img src="./assets/snake_cover.png" alt="Snake Game cover"
+        <img src="assets/snake_cover.png" alt="Snake Game cover"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="game-cover-placeholder" style="display:none">🐍</div>
       </div>
@@ -700,7 +700,7 @@
 
     <a href="asteroids-game/asteroids.html" class="card game-card reveal">
       <div class="game-cover">
-        <img src="./assets/asteroids_cover.png" alt="VOIDRIFT cover"
+        <img src="assets/asteroids_cover.png" alt="VOIDRIFT cover"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="game-cover-placeholder" style="display:none">🌌</div>
       </div>
@@ -718,7 +718,7 @@
 
     <a href="flappy-game/flappy.html" class="card game-card reveal">
       <div class="game-cover">
-        <img src="./assets/flappy_cover.png" alt="FLAPVOID cover"
+        <img src="assets/flappy_cover.png" alt="FLAPVOID cover"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="game-cover-placeholder" style="display:none">🐦</div>
       </div>
