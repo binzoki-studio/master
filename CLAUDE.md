@@ -16,7 +16,9 @@ This repo powers the portfolio site at binzoki-studio.github.io/master
 │   └── flappy/
 │       └── flappy.html     # FLAPVOID flappy bird game (live)
 ├── ai/
-│   └── model-arena/        # Mistral Arena (deployed to Vercel)
+│   ├── model-arena/        # Model Arena (deployed to Vercel)
+│   └── rag-chat/
+│       └── index.html      # RAG Chat tool (live, browser-only)
 └── CLAUDE.md           # This file
 
 ## index.html structure

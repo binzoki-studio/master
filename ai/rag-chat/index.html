@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG CHAT — Binzoki Studio</title>
+<script>(function(){var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root, [data-theme="dark"] {
+    --bg:        #0a0a0a;
+    --surface:   #111118;
+    --card:      #14141e;
+    --border:    rgba(245,240,232,0.07);
+    --text:      #f5f0e8;
+    --dim:       rgba(245,240,232,0.35);
+    --dimmer:    rgba(245,240,232,0.18);
+    --accent:    #ffe600;
+    --accent-text: #0a0a0a;
+    --grid:      rgba(245,240,232,0.03);
+    --nav-bg:    rgba(10,10,10,0.88);
+    --input-bg:  rgba(245,240,232,0.04);
+    --user-msg:  rgba(255,230,0,0.08);
+    --ai-msg:    rgba(245,240,232,0.04);
+    --chunk-bg:  rgba(0,180,160,0.06);
+    --chunk-border: rgba(0,180,160,0.2);
+    --error:     #ff3c00;
+    --ok:        #00b4a0;
+  }
+  [data-theme="light"] {
+    --bg:        #f5f1ea;
+    --surface:   #ece8e0;
+    --card:      #ffffff;
+    --border:    rgba(20,18,14,0.1);
+    --text:      #1a1714;
+    --dim:       rgba(20,18,14,0.45);
+    --dimmer:    rgba(20,18,14,0.22);
+    --accent:    #d4a800;
+    --accent-text: #ffffff;
+    --grid:      rgba(20,18,14,0.04);
+    --nav-bg:    rgba(245,241,234,0.92);
+    --input-bg:  rgba(20,18,14,0.04);
+    --user-msg:  rgba(212,168,0,0.1);
+    --ai-msg:    rgba(20,18,14,0.04);
+    --chunk-bg:  rgba(0,180,160,0.06);
+    --chunk-border: rgba(0,180,160,0.3);
+    --error:     #cc2200;
+    --ok:        #007a6e;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 5vw;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-left { display: flex; align-items: center; gap: 24px; }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    letter-spacing: 0.1em; text-decoration: none; color: var(--text);
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.22em;
+    color: var(--dim); text-transform: uppercase;
+  }
+  .theme-toggle {
+    position: relative; width: 52px; height: 28px;
+    border-radius: 999px; border: none; cursor: pointer;
+    background: rgba(245,240,232,0.12);
+    box-shadow: inset 0 0 0 1.5px var(--border);
+    transition: background 0.35s, box-shadow 0.35s;
+    flex-shrink: 0; padding: 0;
+  }
+  [data-theme="dark"]  .theme-toggle { background: rgba(255,255,255,0.08); }
+  [data-theme="light"] .theme-toggle { background: #e2ddd6; box-shadow: inset 0 0 0 1.5px rgba(24,21,15,0.14); }
+  .theme-toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--text);
+    transition: transform 0.35s cubic-bezier(0.34,1.4,0.64,1), background 0.35s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  }
+  [data-theme="light"] .theme-toggle::after { transform: translateX(24px); }
+  .toggle-icon { position: absolute; top: 50%; transform: translateY(-50%); font-size: 11px; pointer-events: none; transition: opacity 0.25s; }
+  .toggle-icon-moon { left: 7px; }
+  .toggle-icon-sun  { right: 6px; }
+  [data-theme="dark"]  .toggle-icon-moon { opacity: 1; }
+  [data-theme="dark"]  .toggle-icon-sun  { opacity: 0; }
+  [data-theme="light"] .toggle-icon-moon { opacity: 0; }
+  [data-theme="light"] .toggle-icon-sun  { opacity: 1; }
+
+  /* ── LAYOUT ── */
+  .app-wrapper {
+    position: relative; z-index: 1;
+    max-width: 1600px; margin: 0 auto;
+    padding: 44px 5vw 80px;
+  }
+
+  /* ── HEADER ── */
+  .page-header { margin-bottom: 44px; }
+  .page-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 0.3em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 12px;
+  }
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 7vw, 90px);
+    line-height: 0.92; letter-spacing: -0.01em; margin-bottom: 14px;
+  }
+  .page-title em { font-style: normal; color: var(--accent); }
+  .page-desc { font-size: 14px; line-height: 1.7; color: var(--dim); max-width: 520px; }
+
+  /* ── API KEY PANEL ── */
+  .api-panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px 28px; margin-bottom: 28px;
+    display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap;
+  }
+  .api-panel .field { flex: 1; min-width: 260px; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 0.22em;
+    color: var(--dim); text-transform: uppercase;
+  }
+  .field input, .field textarea {
+    background: var(--input-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 11px 16px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    outline: none; width: 100%; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus, .field textarea:focus {
+    border-color: rgba(255,230,0,0.4);
+    box-shadow: 0 0 0 3px rgba(255,230,0,0.07);
+  }
+  .field input::placeholder, .field textarea::placeholder { color: var(--dim); }
+  .field input[type="password"] { letter-spacing: 0.1em; font-size: 13px; }
+
+  .btn {
+    background: var(--accent); color: var(--accent-text);
+    border: none; border-radius: 8px; padding: 11px 28px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.1em;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  }
+  .btn:hover:not(:disabled) {
+    opacity: 0.9; transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(255,230,0,0.25);
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn.secondary {
+    background: var(--input-bg); color: var(--text);
+    border: 1px solid var(--border); font-size: 14px;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+    letter-spacing: 0;
+  }
+  .btn.secondary:hover:not(:disabled) {
+    border-color: rgba(245,240,232,0.2);
+    box-shadow: none;
+  }
+
+  /* ── UPLOAD PANEL ── */
+  .upload-panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 28px; margin-bottom: 28px;
+  }
+  .upload-panel-title {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--dim); margin-bottom: 20px;
+  }
+  .upload-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+  .drop-zone {
+    flex: 1; min-width: 200px; min-height: 100px;
+    border: 1px dashed var(--border); border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; cursor: pointer; padding: 24px;
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--input-bg);
+  }
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: rgba(255,230,0,0.4);
+    background: rgba(255,230,0,0.04);
+  }
+  .drop-zone-icon { font-size: 28px; opacity: 0.5; }
+  .drop-zone-text {
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.15em; color: var(--dim); text-align: center; line-height: 1.8;
+  }
+  .drop-zone-text span { color: var(--accent); }
+  #file-input { display: none; }
+
+  .text-area-wrap { flex: 2; min-width: 280px; display: flex; flex-direction: column; gap: 10px; }
+  .text-area-wrap textarea {
+    background: var(--input-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; line-height: 1.7;
+    outline: none; resize: vertical; min-height: 120px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .text-area-wrap textarea:focus {
+    border-color: rgba(255,230,0,0.4);
+    box-shadow: 0 0 0 3px rgba(255,230,0,0.07);
+  }
+  .text-area-wrap textarea::placeholder { color: var(--dim); }
+  .upload-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+  /* ── DOC STATS ── */
+  .doc-stats {
+    display: none;
+    background: rgba(0,180,160,0.06); border: 1px solid rgba(0,180,160,0.18);
+    border-radius: 8px; padding: 14px 18px; margin-top: 16px;
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.1em; color: var(--ok); gap: 24px;
+    flex-wrap: wrap;
+  }
+  .doc-stats.visible { display: flex; }
+  .stat-item { display: flex; flex-direction: column; gap: 4px; }
+  .stat-label { opacity: 0.6; font-size: 9px; letter-spacing: 0.2em; }
+  .stat-value { font-size: 13px; }
+
+  /* ── PROGRESS BAR ── */
+  .embed-progress {
+    display: none; margin-top: 14px;
+  }
+  .embed-progress.visible { display: block; }
+  .progress-label {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.18em; color: var(--dim); margin-bottom: 8px;
+  }
+  .progress-track {
+    height: 3px; background: var(--border); border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent); border-radius: 2px;
+    width: 0%; transition: width 0.3s ease;
+  }
+
+  /* ── MAIN CHAT AREA ── */
+  .chat-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* ── CHAT PANEL ── */
+  .chat-panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .chat-messages {
+    min-height: 400px; max-height: 560px;
+    overflow-y: auto; padding: 28px;
+    display: flex; flex-direction: column; gap: 20px;
+    scroll-behavior: smooth;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-track { background: transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .chat-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%; min-height: 320px; gap: 12px; opacity: 0.4;
+  }
+  .chat-empty-icon { font-size: 36px; }
+  .chat-empty-text {
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim);
+    text-align: center; line-height: 1.8;
+  }
+
+  .message { display: flex; flex-direction: column; gap: 6px; max-width: 88%; }
+  .message.user { align-self: flex-end; align-items: flex-end; }
+  .message.assistant { align-self: flex-start; align-items: flex-start; }
+
+  .msg-role {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim);
+  }
+  .message.user .msg-role { color: rgba(255,230,0,0.5); }
+
+  .msg-bubble {
+    padding: 14px 18px; border-radius: 10px;
+    font-size: 14px; line-height: 1.75;
+    border: 1px solid var(--border);
+  }
+  .message.user .msg-bubble {
+    background: var(--user-msg);
+    border-color: rgba(255,230,0,0.15);
+  }
+  .message.assistant .msg-bubble {
+    background: var(--ai-msg);
+  }
+
+  .msg-thinking {
+    display: flex; align-items: center; gap: 6px;
+    padding: 14px 18px; border-radius: 10px;
+    background: var(--ai-msg); border: 1px solid var(--border);
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    letter-spacing: 0.1em; color: var(--dim);
+  }
+  .dot-pulse { display: flex; gap: 4px; }
+  .dot-pulse span {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--dim); animation: pulse 1.2s ease-in-out infinite;
+  }
+  .dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
+  .dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1); }
+  }
+
+  /* ── CHAT INPUT ── */
+  .chat-input-area {
+    padding: 18px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: flex-end;
+  }
+  .chat-input-area textarea {
+    flex: 1; background: var(--input-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 11px 14px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.5;
+    outline: none; resize: none; min-height: 44px; max-height: 120px;
+    overflow-y: auto;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .chat-input-area textarea:focus {
+    border-color: rgba(255,230,0,0.4);
+    box-shadow: 0 0 0 3px rgba(255,230,0,0.07);
+  }
+  .chat-input-area textarea::placeholder { color: var(--dim); }
+  .send-btn {
+    background: var(--accent); color: var(--accent-text);
+    border: none; border-radius: 8px; padding: 11px 20px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.08em;
+    cursor: pointer; flex-shrink: 0; height: 44px;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .send-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+  .send-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+  .chat-status {
+    padding: 8px 20px 0;
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.15em; color: var(--dim); min-height: 20px;
+  }
+  .chat-status.error { color: var(--error); }
+
+  /* ── SIDEBAR ── */
+  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+  .sidebar-panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px;
+  }
+  .sidebar-title {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--dim); margin-bottom: 16px;
+  }
+
+  .chunk-card {
+    background: var(--chunk-bg); border: 1px solid var(--chunk-border);
+    border-radius: 8px; padding: 14px; margin-bottom: 10px;
+  }
+  .chunk-card:last-child { margin-bottom: 0; }
+  .chunk-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .chunk-rank {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.2em; color: var(--ok); text-transform: uppercase;
+  }
+  .chunk-score {
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    color: var(--ok); font-weight: 700;
+  }
+  .chunk-text {
+    font-size: 12px; line-height: 1.65; color: var(--dim);
+    display: -webkit-box; -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .chunks-empty {
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 0.12em; color: var(--dimmer);
+    text-align: center; padding: 20px 0; line-height: 1.8;
+  }
+
+  .info-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-key {
+    font-family: 'Space Mono', monospace; font-size: 9px;
+    letter-spacing: 0.15em; color: var(--dim); text-transform: uppercase;
+  }
+  .info-val { color: var(--text); font-weight: 500; }
+  .info-val.ok { color: var(--ok); }
+  .info-val.error { color: var(--error); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .chat-layout { grid-template-columns: 1fr; }
+    .sidebar { order: -1; }
+  }
+  @media (max-width: 600px) {
+    .upload-row { flex-direction: column; }
+    .api-panel { flex-direction: column; align-items: stretch; }
+    .chat-messages { max-height: 400px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="../../index.html" class="nav-logo">BINZOKI<span>.</span></a>
+    <span class="nav-tag">// TOOL — 002</span>
+  </div>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <span class="toggle-icon toggle-icon-moon">🌙</span>
+    <span class="toggle-icon toggle-icon-sun">☀️</span>
+  </button>
+</nav>
+
+<div class="app-wrapper">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="page-label">// TOOL — 002 · Retrieval-Augmented Generation</div>
+    <h1 class="page-title">RAG <em>CHAT</em></h1>
+    <p class="page-desc">Upload a document or paste text. Ask questions. The app finds the most relevant passages and generates answers grounded in your content.</p>
+  </div>
+
+  <!-- API KEY -->
+  <div class="api-panel">
+    <div class="field">
+      <label class="field-label" for="api-key-input">Mistral API Key</label>
+      <input type="password" id="api-key-input" placeholder="Enter your Mistral API key…" autocomplete="off" spellcheck="false">
+    </div>
+    <button class="btn" id="save-key-btn">Save Key</button>
+    <div id="key-status" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.12em;color:var(--dim);align-self:center;"></div>
+  </div>
+
+  <!-- UPLOAD PANEL -->
+  <div class="upload-panel">
+    <div class="upload-panel-title">Document Source</div>
+    <div class="upload-row">
+      <div class="drop-zone" id="drop-zone" tabindex="0" role="button" aria-label="Upload file">
+        <div class="drop-zone-icon">📄</div>
+        <div class="drop-zone-text">
+          Drop a <span>.txt</span> or <span>.pdf</span> file here<br>
+          or <span>click to browse</span>
+        </div>
+        <input type="file" id="file-input" accept=".txt,.pdf">
+      </div>
+      <div class="text-area-wrap">
+        <textarea id="text-input" placeholder="…or paste your text here directly." rows="5"></textarea>
+        <div class="upload-actions">
+          <button class="btn" id="embed-btn" disabled>Embed Document</button>
+          <button class="btn secondary" id="clear-btn">Clear</button>
+        </div>
+      </div>
+    </div>
+    <div class="embed-progress" id="embed-progress">
+      <div class="progress-label" id="progress-label">EMBEDDING CHUNKS — 0 / 0</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+    <div class="doc-stats" id="doc-stats">
+      <div class="stat-item">
+        <span class="stat-label">Characters</span>
+        <span class="stat-value" id="stat-chars">—</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Words</span>
+        <span class="stat-value" id="stat-words">—</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Chunks</span>
+        <span class="stat-value" id="stat-chunks">—</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Status</span>
+        <span class="stat-value" id="stat-status">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT LAYOUT -->
+  <div class="chat-layout">
+
+    <!-- CHAT PANEL -->
+    <div class="chat-panel">
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-empty" id="chat-empty">
+          <div class="chat-empty-icon">💬</div>
+          <div class="chat-empty-text">Embed a document first,<br>then ask your questions.</div>
+        </div>
+      </div>
+      <div class="chat-status" id="chat-status"></div>
+      <div class="chat-input-area">
+        <textarea id="chat-input" placeholder="Ask a question about your document…" rows="1" disabled></textarea>
+        <button class="send-btn" id="send-btn" disabled>Send</button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-panel">
+        <div class="sidebar-title">Retrieved Chunks</div>
+        <div id="chunks-display">
+          <div class="chunks-empty">No retrieval yet.<br>Ask a question to see<br>the source passages.</div>
+        </div>
+      </div>
+      <div class="sidebar-panel">
+        <div class="sidebar-title">Session Info</div>
+        <div class="info-row">
+          <span class="info-key">API Key</span>
+          <span class="info-val" id="info-key-status">Not set</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Chunks Stored</span>
+          <span class="info-val" id="info-chunks">0</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Messages</span>
+          <span class="info-val" id="info-messages">0</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Embed Model</span>
+          <span class="info-val">mistral-embed</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Chat Model</span>
+          <span class="info-val">mistral-small-latest</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+const state = {
+  apiKey: localStorage.getItem('rag_api_key') || '',
+  chunks: [],       // [{ text, embedding }]
+  messageCount: 0,
+  isEmbedding: false,
+  isQuerying: false,
+};
+
+const CHUNK_SIZE    = 500;
+const CHUNK_OVERLAP = 100;
+const TOP_K         = 3;
+const EMBED_MODEL   = 'mistral-embed';
+const CHAT_MODEL    = 'mistral-small-latest';
+
+// ── DOM ──
+const apiKeyInput    = document.getElementById('api-key-input');
+const saveKeyBtn     = document.getElementById('save-key-btn');
+const keyStatus      = document.getElementById('key-status');
+const dropZone       = document.getElementById('drop-zone');
+const fileInput      = document.getElementById('file-input');
+const textInput      = document.getElementById('text-input');
+const embedBtn       = document.getElementById('embed-btn');
+const clearBtn       = document.getElementById('clear-btn');
+const embedProgress  = document.getElementById('embed-progress');
+const progressLabel  = document.getElementById('progress-label');
+const progressFill   = document.getElementById('progress-fill');
+const docStats       = document.getElementById('doc-stats');
+const statChars      = document.getElementById('stat-chars');
+const statWords      = document.getElementById('stat-words');
+const statChunks     = document.getElementById('stat-chunks');
+const statStatus     = document.getElementById('stat-status');
+const chatMessages   = document.getElementById('chat-messages');
+const chatEmpty      = document.getElementById('chat-empty');
+const chatInput      = document.getElementById('chat-input');
+const sendBtn        = document.getElementById('send-btn');
+const chatStatusEl   = document.getElementById('chat-status');
+const chunksDisplay  = document.getElementById('chunks-display');
+const infoKeyStatus  = document.getElementById('info-key-status');
+const infoChunks     = document.getElementById('info-chunks');
+const infoMessages   = document.getElementById('info-messages');
+
+// ── INIT ──
+if (state.apiKey) {
+  apiKeyInput.value = state.apiKey;
+  updateKeyStatus(true);
+}
+
+// ── THEME TOGGLE ──
+const themeToggle = document.getElementById('theme-toggle');
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+}
+applyTheme(localStorage.getItem('theme') || 'dark');
+themeToggle.addEventListener('click', () => {
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+// ── API KEY ──
+saveKeyBtn.addEventListener('click', () => {
+  const key = apiKeyInput.value.trim();
+  if (!key) return;
+  state.apiKey = key;
+  localStorage.setItem('rag_api_key', key);
+  updateKeyStatus(true);
+});
+apiKeyInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveKeyBtn.click(); });
+
+function updateKeyStatus(ok) {
+  keyStatus.textContent = ok ? '✓ Key saved' : '✗ No key set';
+  keyStatus.style.color = ok ? 'var(--ok)' : 'var(--error)';
+  infoKeyStatus.textContent = ok ? 'Set' : 'Not set';
+  infoKeyStatus.className = 'info-val ' + (ok ? 'ok' : 'error');
+}
+
+// ── FILE DROP / UPLOAD ──
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') fileInput.click(); });
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+
+async function handleFile(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (ext === 'txt') {
+    const text = await file.text();
+    textInput.value = text;
+    updateEmbedBtn();
+  } else if (ext === 'pdf') {
+    setChatStatus('Extracting PDF text…');
+    try {
+      const text = await extractPdfText(file);
+      textInput.value = text;
+      updateEmbedBtn();
+      setChatStatus('');
+    } catch (err) {
+      setChatStatus('PDF extraction failed: ' + err.message, true);
+    }
+  } else {
+    setChatStatus('Only .txt and .pdf files are supported.', true);
+  }
+}
+
+async function extractPdfText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const bytes = new Uint8Array(e.target.result);
+      // Minimal PDF text extraction: grab text between BT/ET blocks
+      let text = '';
+      const decoder = new TextDecoder('latin1');
+      const raw = decoder.decode(bytes);
+      // Extract strings from Tj/TJ operators
+      const tjRe = /\(([^)\\]*(?:\\.[^)\\]*)*)\)\s*Tj/g;
+      const tjArrRe = /\[([^\]]*)\]\s*TJ/g;
+      let m;
+      while ((m = tjRe.exec(raw)) !== null) {
+        text += decodePdfString(m[1]) + ' ';
+      }
+      while ((m = tjArrRe.exec(raw)) !== null) {
+        const inner = m[1];
+        const parts = inner.matchAll(/\(([^)\\]*(?:\\.[^)\\]*)*)\)/g);
+        for (const p of parts) text += decodePdfString(p[1]);
+        text += ' ';
+      }
+      text = text.replace(/\s+/g, ' ').trim();
+      if (!text) reject(new Error('Could not extract text from this PDF. Try copy-pasting the text directly.'));
+      else resolve(text);
+    };
+    reader.onerror = () => reject(new Error('Failed to read file.'));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function decodePdfString(s) {
+  return s
+    .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '\r')
+    .replace(/\\t/g, '\t')
+    .replace(/\\\\/g, '\\')
+    .replace(/\\\(/g, '(')
+    .replace(/\\\)/g, ')');
+}
+
+textInput.addEventListener('input', updateEmbedBtn);
+function updateEmbedBtn() {
+  embedBtn.disabled = !textInput.value.trim() || state.isEmbedding;
+}
+
+// ── CLEAR ──
+clearBtn.addEventListener('click', () => {
+  textInput.value = '';
+  fileInput.value = '';
+  state.chunks = [];
+  embedBtn.disabled = true;
+  docStats.classList.remove('visible');
+  embedProgress.classList.remove('visible');
+  updateEmbedBtn();
+  updateInfoPanel();
+  setChatStatus('');
+  disableChat();
+});
+
+// ── CHUNKING ──
+function chunkText(text) {
+  const chunks = [];
+  let i = 0;
+  while (i < text.length) {
+    chunks.push(text.slice(i, i + CHUNK_SIZE));
+    if (i + CHUNK_SIZE >= text.length) break;
+    i += CHUNK_SIZE - CHUNK_OVERLAP;
+  }
+  return chunks;
+}
+
+// ── EMBEDDING ──
+embedBtn.addEventListener('click', async () => {
+  if (!state.apiKey) {
+    setChatStatus('Set your Mistral API key first.', true);
+    return;
+  }
+  const text = textInput.value.trim();
+  if (!text) return;
+
+  const chunks = chunkText(text);
+  state.isEmbedding = true;
+  embedBtn.disabled = true;
+  clearBtn.disabled = true;
+  state.chunks = [];
+
+  // Show progress
+  embedProgress.classList.add('visible');
+  docStats.classList.remove('visible');
+  progressFill.style.width = '0%';
+
+  try {
+    const embeddings = [];
+    for (let i = 0; i < chunks.length; i++) {
+      progressLabel.textContent = `EMBEDDING CHUNKS — ${i + 1} / ${chunks.length}`;
+      progressFill.style.width = `${((i + 1) / chunks.length) * 100}%`;
+
+      const emb = await embedText(chunks[i]);
+      embeddings.push(emb);
+    }
+
+    state.chunks = chunks.map((text, i) => ({ text, embedding: embeddings[i] }));
+
+    // Stats
+    statChars.textContent  = text.length.toLocaleString();
+    statWords.textContent  = text.trim().split(/\s+/).length.toLocaleString();
+    statChunks.textContent = chunks.length;
+    statStatus.textContent = '✓ Ready';
+    statStatus.style.color = 'var(--ok)';
+    docStats.classList.add('visible');
+
+    progressLabel.textContent = `✓ ${chunks.length} CHUNKS EMBEDDED`;
+
+    enableChat();
+    updateInfoPanel();
+    setChatStatus('');
+  } catch (err) {
+    setChatStatus('Embedding failed: ' + err.message, true);
+    statStatus.textContent = '✗ Error';
+    statStatus.style.color = 'var(--error)';
+    docStats.classList.add('visible');
+  } finally {
+    state.isEmbedding = false;
+    clearBtn.disabled = false;
+    updateEmbedBtn();
+  }
+});
+
+async function embedText(text) {
+  const res = await fetch('https://api.mistral.ai/v1/embeddings', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${state.apiKey}`,
+    },
+    body: JSON.stringify({ model: EMBED_MODEL, input: [text] }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  return data.data[0].embedding;
+}
+
+// ── COSINE SIMILARITY ──
+function cosineSim(a, b) {
+  let dot = 0, normA = 0, normB = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot   += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+function retrieveTopK(queryEmbedding, k) {
+  return state.chunks
+    .map(chunk => ({ ...chunk, score: cosineSim(queryEmbedding, chunk.embedding) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, k);
+}
+
+// ── CHAT ──
+function enableChat() {
+  chatInput.disabled = false;
+  sendBtn.disabled   = false;
+  chatEmpty.style.display = 'none';
+}
+function disableChat() {
+  chatInput.disabled = true;
+  sendBtn.disabled   = true;
+  chatEmpty.style.display = 'flex';
+  chatMessages.innerHTML = '';
+  chatMessages.appendChild(chatEmpty);
+  chunksDisplay.innerHTML = '<div class="chunks-empty">No retrieval yet.<br>Ask a question to see<br>the source passages.</div>';
+  state.messageCount = 0;
+  updateInfoPanel();
+}
+
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+async function sendMessage() {
+  const question = chatInput.value.trim();
+  if (!question || state.isQuerying || !state.chunks.length) return;
+  if (!state.apiKey) { setChatStatus('Set your API key first.', true); return; }
+
+  state.isQuerying = true;
+  sendBtn.disabled = true;
+  chatInput.disabled = true;
+  chatInput.value = '';
+  autoResizeTextarea(chatInput);
+
+  appendMessage('user', question);
+  state.messageCount++;
+
+  const thinkingEl = appendThinking();
+  setChatStatus('Embedding question…');
+
+  try {
+    const qEmbedding = await embedText(question);
+    setChatStatus('Retrieving relevant passages…');
+
+    const topChunks = retrieveTopK(qEmbedding, TOP_K);
+    renderChunks(topChunks);
+
+    setChatStatus('Generating answer…');
+    const context = topChunks.map((c, i) => `[${i+1}] ${c.text}`).join('\n\n');
+    const systemPrompt = `You are a helpful assistant that answers questions based strictly on the provided context passages. If the answer is not in the context, say so clearly. Be concise and accurate.\n\nContext:\n${context}`;
+
+    const answer = await chatCompletion(systemPrompt, question);
+
+    thinkingEl.remove();
+    appendMessage('assistant', answer);
+    state.messageCount++;
+    setChatStatus('');
+  } catch (err) {
+    thinkingEl.remove();
+    appendMessage('assistant', `Error: ${err.message}`);
+    setChatStatus(err.message, true);
+  } finally {
+    state.isQuerying = false;
+    sendBtn.disabled = false;
+    chatInput.disabled = false;
+    chatInput.focus();
+    updateInfoPanel();
+  }
+}
+
+async function chatCompletion(system, user) {
+  const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${state.apiKey}`,
+    },
+    body: JSON.stringify({
+      model: CHAT_MODEL,
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user',   content: user },
+      ],
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  return data.choices[0].message.content;
+}
+
+// ── UI HELPERS ──
+function appendMessage(role, text) {
+  const wrap = document.createElement('div');
+  wrap.className = `message ${role}`;
+
+  const roleEl = document.createElement('div');
+  roleEl.className = 'msg-role';
+  roleEl.textContent = role === 'user' ? 'You' : 'RAG Chat';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+
+  wrap.appendChild(roleEl);
+  wrap.appendChild(bubble);
+  chatMessages.appendChild(wrap);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  return wrap;
+}
+
+function appendThinking() {
+  const wrap = document.createElement('div');
+  wrap.className = 'message assistant';
+
+  const roleEl = document.createElement('div');
+  roleEl.className = 'msg-role';
+  roleEl.textContent = 'RAG Chat';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-thinking';
+  bubble.innerHTML = '<div class="dot-pulse"><span></span><span></span><span></span></div><span>Thinking…</span>';
+
+  wrap.appendChild(roleEl);
+  wrap.appendChild(bubble);
+  chatMessages.appendChild(wrap);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  return wrap;
+}
+
+function renderChunks(chunks) {
+  chunksDisplay.innerHTML = '';
+  chunks.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'chunk-card';
+    card.innerHTML = `
+      <div class="chunk-header">
+        <span class="chunk-rank">Chunk ${i + 1}</span>
+        <span class="chunk-score">${(c.score * 100).toFixed(1)}%</span>
+      </div>
+      <div class="chunk-text">${escHtml(c.text)}</div>
+    `;
+    chunksDisplay.appendChild(card);
+  });
+}
+
+function setChatStatus(msg, isError = false) {
+  chatStatusEl.textContent = msg;
+  chatStatusEl.className = 'chat-status' + (isError ? ' error' : '');
+}
+
+function updateInfoPanel() {
+  infoChunks.textContent   = state.chunks.length;
+  infoMessages.textContent = state.messageCount;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Auto-resize textarea
+chatInput.addEventListener('input', () => autoResizeTextarea(chatInput));
+function autoResizeTextarea(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+</script>
+</body>
+</html>
