@@ -654,6 +654,53 @@
     z-index: 9998;
     opacity: 0.4;
   }
+
+  /* ── RESPONSIVE: MOBILE ── */
+  @media (max-width: 768px) {
+
+    /* Nav: hide links */
+    .nav-links { display: none; }
+    nav { padding: 20px 5vw; }
+
+    /* Hero */
+    .hero { padding: 0 5vw 8vh; }
+    .hero-desc { font-size: 16px; }
+
+    /* Section layout */
+    section { padding: 64px 5vw; }
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    /* Grids: single column */
+    .games-grid,
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+
+    /* Game cover: landscape ratio on mobile (less tall) */
+    .game-cover { aspect-ratio: 4 / 3; }
+    .game-cover-placeholder { font-size: 56px; }
+
+    /* Card info */
+    .game-info { padding: 20px 24px 24px; }
+    .card.game-card .card-title { font-size: clamp(24px, 7vw, 36px); }
+
+    /* Footer: stack */
+    footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 32px;
+      padding: 56px 5vw 40px;
+    }
+    .footer-right { text-align: left; }
+
+    /* Hide custom cursor on touch */
+    .cursor { display: none; }
+  }
 </style>
 </head>
 <body>
