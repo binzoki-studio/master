@@ -7,12 +7,16 @@ This repo powers the portfolio site at binzoki-studio.github.io/master
 ## Repo structure
 ~/Desktop/Claude/github/
 ├── index.html          # Main portfolio homepage
-├── snake-game/
-│   └── snake.html      # Snake game (live)
-├── asteroids-game/
-│   └── asteroids.html  # VOIDRIFT asteroids game (live)
-├── flappy-game/
-│   └── flappy.html     # FLAPVOID flappy bird game (live)
+├── assets/             # Cover images and static assets
+├── games/
+│   ├── snake/
+│   │   └── snake.html      # Snake game (live)
+│   ├── asteroids/
+│   │   └── asteroids.html  # VOIDRIFT asteroids game (live)
+│   └── flappy/
+│       └── flappy.html     # FLAPVOID flappy bird game (live)
+├── ai/
+│   └── model-arena/        # Mistral Arena (deployed to Vercel)
 └── CLAUDE.md           # This file
 
 ## index.html structure
@@ -28,9 +32,9 @@ This repo powers the portfolio site at binzoki-studio.github.io/master
 - Section count displayed in .section-count div in .section-header
 
 ## When adding a new game
-1. Create folder: `<game-name>-game/`
-2. Create: `<game-name>-game/<game-name>.html`
-3. Add a .card.featured in index.html under #games section
+1. Create folder: `games/<game-name>/`
+2. Create: `games/<game-name>/<game-name>.html`
+3. Add a .card.featured in index.html under #games section with href `games/<game-name>/<game-name>.html`
 4. Update section count in #games .section-count
 5. Commit: `git add . && git commit -m "Add <game name>" && git push`
 
